@@ -26,7 +26,9 @@ import com.example.androiddevchallenge.ui.JettimerApp
 import com.example.androiddevchallenge.ui.theme.JettimerTheme
 import com.example.androiddevchallenge.util.LocalSysUiController
 import com.example.androiddevchallenge.util.SystemUiController
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
