@@ -20,40 +20,114 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.Stable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.ui.graphics.Color
+import com.example.androiddevchallenge.util.LocalSysUiController
 
 private val DarkColorPalette = darkColors(
-    primary = purple200,
-    primaryVariant = purple700,
-    secondary = teal200
+    primary = BlackLight,
+    primaryVariant = BlackLight,
+    secondary = Teal200,
+    background = BackgroundDark,
+    surface = Color.Black,
+    onPrimary = Color.White,
+    onSecondary = Color.White,
+    onBackground = Color.White,
+    onSurface = Color.White
 )
 
 private val LightColorPalette = lightColors(
-    primary = purple500,
-    primaryVariant = purple700,
-    secondary = teal200
-
-        /* Other default colors to override
-    background = Color.White,
+    primary = Color.White,
+    primaryVariant = Color.White,
+    secondary = Teal200,
+    background = BackgroundLight,
     surface = Color.White,
-    onPrimary = Color.White,
+    onPrimary = Color.Black,
     onSecondary = Color.Black,
     onBackground = Color.Black,
-    onSurface = Color.Black,
-    */
+    onSurface = Color.Black
+)
+
+private val LightTimerColorPalette = JettimerColors(
+    textPrimaryColor = Color.Black,
+    textSecondaryColor = TextSecondaryLight,
+    searchBoxColor = GraySearchBoxLight,
+    isDark = false
+)
+
+private val DarkTimerColorPalette = JettimerColors(
+    textPrimaryColor = Color.White,
+    textSecondaryColor = TextSecondaryDark,
+    searchBoxColor = GraySearchBoxDark,
+    isDark = true
 )
 
 @Composable
-fun MyTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable() () -> Unit) {
-    val colors = if (darkTheme) {
-        DarkColorPalette
-    } else {
-        LightColorPalette
+fun JettimerTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
+    val (colors, customColors) = if (darkTheme) DarkColorPalette to DarkTimerColorPalette else LightColorPalette to LightTimerColorPalette
+    val sysUiController = LocalSysUiController.current
+    SideEffect {
+        sysUiController.setSystemBarsColor(
+            color = colors.primary
+        )
     }
+    ProvideJettimerColors(customColors) {
+        MaterialTheme(
+            colors = colors,
+            typography = typography,
+            shapes = Shapes,
+            content = content
+        )
+    }
+}
 
-    MaterialTheme(
-        colors = colors,
-        typography = typography,
-        shapes = shapes,
-        content = content
-    )
+object JettimerTheme {
+    val colors: JettimerColors
+        @Composable
+        get() = LocalJettimerColors.current
+}
+
+@Composable
+fun ProvideJettimerColors(
+    colors: JettimerColors,
+    content: @Composable () -> Unit
+) {
+    val colorPalette = remember { colors }
+    colorPalette.update(colors)
+    CompositionLocalProvider(LocalJettimerColors provides colorPalette, content = content)
+}
+
+@Stable
+class JettimerColors(
+    textPrimaryColor: Color,
+    textSecondaryColor: Color,
+    searchBoxColor: Color,
+    isDark: Boolean
+) {
+    var textPrimaryColor by mutableStateOf(textPrimaryColor)
+        private set
+    var textSecondaryColor by mutableStateOf(textSecondaryColor)
+        private set
+    var searchBoxColor by mutableStateOf(searchBoxColor)
+        private set
+    var isDark by mutableStateOf(isDark)
+        private set
+
+    fun update(other: JettimerColors) {
+        textPrimaryColor = other.textPrimaryColor
+        textSecondaryColor = other.textSecondaryColor
+        searchBoxColor = other.searchBoxColor
+        isDark = other.isDark
+    }
+}
+
+private val LocalJettimerColors = staticCompositionLocalOf<JettimerColors> {
+    error("No JetsnackColorPalette provided")
 }
