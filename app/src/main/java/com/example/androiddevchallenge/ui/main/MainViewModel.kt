@@ -15,10 +15,25 @@
  */
 package com.example.androiddevchallenge.ui.main
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.switchMap
+import com.example.androiddevchallenge.countdown.CountDownManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class MainViewModel @Inject constructor() :
-    ViewModel()
+class MainViewModel @Inject constructor(private val countDownManager: CountDownManager) :
+    ViewModel() {
+
+    private val _tick = MutableLiveData<Long>(0)
+    private val result = Transformations.map(_tick) { countDownManager.start(it) }
+    val tick = result.switchMap { it.asLiveData() }
+
+    fun start(millisUntilFinished: Long) {
+        _tick.postValue(millisUntilFinished)
+    }
+}

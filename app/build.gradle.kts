@@ -115,7 +115,7 @@ dependencies {
     implementation(Libs.Compose.animation)
     implementation(Libs.Compose.iconsExtended)
     implementation(Libs.Compose.tooling)
-    implementation(Libs.Compose.paging)
+    implementation(Libs.Compose.composeLifecycle)
     implementation(Libs.Activity.activityCompose)
     implementation(Libs.ConstraintLayout.constraintLayoutCompose)
 
@@ -128,6 +128,7 @@ dependencies {
 
     // Architecture Components
     implementation(Libs.Lifecycle.viewModelCompose)
+    implementation(Libs.Lifecycle.liveData)
     implementation(Libs.Navigation.compose)
 
     // Accompanist
