@@ -41,4 +41,8 @@ class MainViewModel @Inject constructor(
     }
 
     fun getTimer() = preferenceManager.timeInMillis
+
+    fun clearTimer() {
+        preferenceManager.timeInMillis = 0
+    }
 }

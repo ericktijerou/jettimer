@@ -16,6 +16,7 @@
 package com.example.androiddevchallenge.ui.main
 
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.MaterialTheme
@@ -35,6 +36,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import com.example.androiddevchallenge.R
 import com.example.androiddevchallenge.ui.component.StartButton
 import com.example.androiddevchallenge.ui.component.Timer
+import com.example.androiddevchallenge.ui.theme.JettimerTheme
 import com.example.androiddevchallenge.util.ThemedPreview
 import com.example.androiddevchallenge.util.isZero
 import com.example.androiddevchallenge.util.toHhMmSs
@@ -47,9 +49,18 @@ fun MainScreen(viewModel: MainViewModel, modifier: Modifier, navigateToAdd: () -
         return
     }
     val tick: Long by viewModel.tick.observeAsState(0)
-    MainScreenBody(time, tick, modifier) {
-        viewModel.start(time)
-    }
+    MainScreenBody(
+        time = time,
+        tick = tick,
+        modifier = modifier
+            .background(color = MaterialTheme.colors.primary)
+            .fillMaxSize(),
+        onStart = { viewModel.start(time) },
+        onDelete = {
+            viewModel.clearTimer()
+            navigateToAdd()
+        }
+    )
 }
 
 @Composable
@@ -57,9 +68,10 @@ fun MainScreenBody(
     time: Long,
     tick: Long,
     modifier: Modifier = Modifier,
-    start: () -> Unit
+    onStart: () -> Unit,
+    onDelete: () -> Unit
 ) {
-    ConstraintLayout(modifier = modifier.fillMaxSize()) {
+    ConstraintLayout(modifier = modifier) {
         val (startButton, timer, label, delete) = createRefs()
         val progress = tick.toFloat() / time.toFloat()
         val animatedProgress by animateFloatAsState(
@@ -97,7 +109,7 @@ fun MainScreenBody(
         )
         StartButton(
             visible = true,
-            onClick = start,
+            onClick = onStart,
             modifier = Modifier
                 .size(60.dp)
                 .constrainAs(startButton) {
@@ -105,8 +117,18 @@ fun MainScreenBody(
                     linkTo(start = parent.start, end = parent.end)
                 }
         )
-        TextButton(onClick = {}) {
-            Text(text = stringResource(R.string.label_delete))
+        TextButton(onClick = onDelete, modifier = Modifier.constrainAs(delete) {
+            linkTo(top = startButton.top, bottom = startButton.bottom)
+            start.linkTo(parent.start, margin = 16.dp)
+        }) {
+            Text(
+                text = stringResource(R.string.label_delete),
+                style = MaterialTheme.typography.body2.copy(
+                    letterSpacing = 0.sp,
+                    fontWeight = FontWeight.W400
+                ),
+                color = JettimerTheme.colors.textPrimaryColor
+            )
         }
     }
 }
@@ -115,7 +137,7 @@ fun MainScreenBody(
 @Composable
 fun PreviewHomeScreenBody() {
     ThemedPreview {
-        MainScreenBody(36000, 3000) {}
+        MainScreenBody(time = 36000, tick = 3000, onStart = {}, onDelete = {})
     }
 }
 
@@ -123,6 +145,6 @@ fun PreviewHomeScreenBody() {
 @Composable
 fun PreviewHomeScreenBodyDark() {
     ThemedPreview(darkTheme = true) {
-        MainScreenBody(36000, 3000) {}
+        MainScreenBody(time = 36000, tick = 3000, onStart = {}, onDelete = {})
     }
 }
