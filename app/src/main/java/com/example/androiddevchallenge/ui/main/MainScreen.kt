@@ -15,19 +15,24 @@
  */
 package com.example.androiddevchallenge.ui.main
 
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.ProgressIndicatorDefaults
 import androidx.compose.material.Text
+import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
+import com.example.androiddevchallenge.R
 import com.example.androiddevchallenge.ui.component.StartButton
 import com.example.androiddevchallenge.ui.component.Timer
 import com.example.androiddevchallenge.util.ThemedPreview
@@ -42,21 +47,27 @@ fun MainScreen(viewModel: MainViewModel, modifier: Modifier, navigateToAdd: () -
         return
     }
     val tick: Long by viewModel.tick.observeAsState(0)
-    MainScreenBody(tick, modifier) {
+    MainScreenBody(time, tick, modifier) {
         viewModel.start(time)
     }
 }
 
 @Composable
 fun MainScreenBody(
+    time: Long,
     tick: Long,
     modifier: Modifier = Modifier,
     start: () -> Unit
 ) {
     ConstraintLayout(modifier = modifier.fillMaxSize()) {
-        val (startButton, timer, label) = createRefs()
+        val (startButton, timer, label, delete) = createRefs()
+        val progress = tick.toFloat() / time.toFloat()
+        val animatedProgress by animateFloatAsState(
+            targetValue = progress,
+            animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec
+        )
         Timer(
-            progress = 0.1f,
+            progress = animatedProgress,
             modifier = Modifier
                 .size(200.dp)
                 .constrainAs(timer) {
@@ -94,6 +105,9 @@ fun MainScreenBody(
                     linkTo(start = parent.start, end = parent.end)
                 }
         )
+        TextButton(onClick = {}) {
+            Text(text = stringResource(R.string.label_delete))
+        }
     }
 }
 
@@ -101,7 +115,7 @@ fun MainScreenBody(
 @Composable
 fun PreviewHomeScreenBody() {
     ThemedPreview {
-        MainScreenBody(36000) {}
+        MainScreenBody(36000, 3000) {}
     }
 }
 
@@ -109,6 +123,6 @@ fun PreviewHomeScreenBody() {
 @Composable
 fun PreviewHomeScreenBodyDark() {
     ThemedPreview(darkTheme = true) {
-        MainScreenBody(36000) {}
+        MainScreenBody(36000, 3000) {}
     }
 }
