@@ -29,7 +29,7 @@ class PreferenceManager @Inject constructor(context: Context) {
     private val pref: SharedPreferences =
         context.getSharedPreferences(PREF_PACKAGE_NAME, Context.MODE_PRIVATE)
 
-    var hasTimer: Boolean
-        get() = pref.getBoolean(PREF_KEY_TIMER, false)
-        set(hasTimer) = pref.edit().putBoolean(PREF_KEY_TIMER, hasTimer).apply()
+    var timeInMillis: Long
+        get() = pref.getLong(PREF_KEY_TIMER, 0)
+        set(timer) = pref.edit().putLong(PREF_KEY_TIMER, timer).apply()
 }

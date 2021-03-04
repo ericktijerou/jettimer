@@ -67,13 +67,18 @@ import com.example.androiddevchallenge.util.ThemedPreview
 import com.example.androiddevchallenge.util.fillWithZeros
 import com.example.androiddevchallenge.util.firstInputIsZero
 import com.example.androiddevchallenge.util.removeLast
+import com.example.androiddevchallenge.util.toLongOrZero
 
 @Composable
-fun AddScreen(viewModel: AddViewModel, modifier: Modifier, navigateToMain: (String) -> Unit) {
+fun AddScreen(viewModel: AddViewModel, modifier: Modifier, navigateToMain: () -> Unit) {
     AddScreenBody(
         timeUnits = viewModel.getTimeUnits(),
         dialColumns = viewModel.getColumns(),
-        modifier = modifier
+        modifier = modifier,
+        navigateToMain = {
+            viewModel.setTimer(it)
+            navigateToMain()
+        }
     )
 }
 
@@ -81,7 +86,8 @@ fun AddScreen(viewModel: AddViewModel, modifier: Modifier, navigateToMain: (Stri
 fun AddScreenBody(
     timeUnits: List<String>,
     dialColumns: List<List<String>>,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    navigateToMain: (Long) -> Unit
 ) {
     Column(
         modifier
@@ -109,15 +115,13 @@ fun AddScreenBody(
         Dial(columns = dialColumns) {
             if (textState.length < 6 && !textState.firstInputIsZero(it)) textState += it
         }
-        StartButton(textState.isNotEmpty())
+        StartButton(textState.isNotEmpty()) { navigateToMain(textState.toLongOrZero()) }
     }
 }
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun StartButton(visible: Boolean) {
-
-
+fun StartButton(visible: Boolean, navigateToMain: () -> Unit) {
     BoxWithConstraints(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
         val height = with(LocalDensity.current) { maxHeight.toPx().toInt() }
         AnimatedVisibility(
@@ -126,7 +130,7 @@ fun StartButton(visible: Boolean) {
             exit = slideOutVertically(targetOffsetY = { height })
         ) {
             IconButton(
-                onClick = { },
+                onClick = navigateToMain,
                 modifier = Modifier
                     .size(60.dp)
                     .background(
@@ -245,7 +249,7 @@ fun PreviewAddScreenBody() {
         AddScreenBody(
             timeUnits = DataManager.timeUnits,
             dialColumns = DataManager.columns
-        )
+        ) {}
     }
 }
 
@@ -256,6 +260,6 @@ fun PreviewAddScreenBodyDark() {
         AddScreenBody(
             timeUnits = DataManager.timeUnits,
             dialColumns = DataManager.columns
-        )
+        ) {}
     }
 }

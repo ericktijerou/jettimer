@@ -25,8 +25,8 @@ import javax.inject.Inject
 class AddViewModel @Inject constructor(private val preferenceManager: PreferenceManager, private val dataManager: DataManager) :
     ViewModel() {
 
-    fun setTimer() {
-        preferenceManager.hasTimer = true
+    fun setTimer(time: Long) {
+        preferenceManager.timeInMillis = time
     }
 
     fun getColumns() = dataManager.columns

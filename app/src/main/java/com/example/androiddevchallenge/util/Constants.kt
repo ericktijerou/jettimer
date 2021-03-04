@@ -17,4 +17,5 @@ package com.example.androiddevchallenge.util
 
 const val EMPTY = ""
 const val ZERO_STRING = "0"
+const val ZERO_LONG = 0L
 const val MAX_LENGTH_TIMER = 6
