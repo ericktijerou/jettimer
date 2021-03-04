@@ -15,21 +15,24 @@
  */
 package com.example.androiddevchallenge.ui.main
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.constraintlayout.compose.ConstraintLayout
+import com.example.androiddevchallenge.ui.component.StartButton
 import com.example.androiddevchallenge.ui.component.Timer
 import com.example.androiddevchallenge.util.ThemedPreview
 import com.example.androiddevchallenge.util.isZero
+import com.example.androiddevchallenge.util.toHhMmSs
 
 @Composable
 fun MainScreen(viewModel: MainViewModel, modifier: Modifier, navigateToAdd: () -> Unit) {
@@ -39,18 +42,58 @@ fun MainScreen(viewModel: MainViewModel, modifier: Modifier, navigateToAdd: () -
         return
     }
     val tick: Long by viewModel.tick.observeAsState(0)
-    MainScreenBody("")
+    MainScreenBody(tick, modifier) {
+        viewModel.start(time)
+    }
 }
 
 @Composable
 fun MainScreenBody(
-    formattedTime: String = ""
+    tick: Long,
+    modifier: Modifier = Modifier,
+    start: () -> Unit
 ) {
-    Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
-        Box(modifier = Modifier.padding(32.dp)) {
-            Timer(progress = 0.1f, modifier = Modifier.fillMaxSize())
-            Text(text = formattedTime)
-        }
+    ConstraintLayout(modifier = modifier.fillMaxSize()) {
+        val (startButton, timer, label) = createRefs()
+        Timer(
+            progress = 0.1f,
+            modifier = Modifier
+                .size(200.dp)
+                .constrainAs(timer) {
+                    linkTo(
+                        start = parent.start,
+                        top = parent.top,
+                        end = parent.end,
+                        bottom = startButton.top
+                    )
+                }
+        )
+        Text(
+            text = tick.toHhMmSs(),
+            style = MaterialTheme.typography.h3.copy(
+                fontWeight = FontWeight.W400,
+                letterSpacing = 1.sp
+            ),
+            color = MaterialTheme.colors.secondaryVariant,
+            modifier = Modifier.constrainAs(label) {
+                linkTo(
+                    start = timer.start,
+                    top = timer.top,
+                    end = timer.end,
+                    bottom = timer.bottom
+                )
+            }
+        )
+        StartButton(
+            visible = true,
+            onClick = start,
+            modifier = Modifier
+                .size(60.dp)
+                .constrainAs(startButton) {
+                    bottom.linkTo(parent.bottom, margin = 16.dp)
+                    linkTo(start = parent.start, end = parent.end)
+                }
+        )
     }
 }
 
@@ -58,7 +101,7 @@ fun MainScreenBody(
 @Composable
 fun PreviewHomeScreenBody() {
     ThemedPreview {
-        MainScreenBody()
+        MainScreenBody(36000) {}
     }
 }
 
@@ -66,6 +109,6 @@ fun PreviewHomeScreenBody() {
 @Composable
 fun PreviewHomeScreenBodyDark() {
     ThemedPreview(darkTheme = true) {
-        MainScreenBody()
+        MainScreenBody(36000) {}
     }
 }

@@ -15,9 +15,41 @@
  */
 package com.example.androiddevchallenge.util
 
+import androidx.compose.ui.util.fastForEachIndexed
+import java.util.concurrent.TimeUnit
+
 fun String.fillWithZeros() = this.padStart(MAX_LENGTH_TIMER, ZERO_STRING.first())
 fun String.removeLast() = if (isNotEmpty()) this.take(this.length - 1) else this
 fun String.firstInputIsZero(input: String) = this.isEmpty() && input == ZERO_STRING
-fun String.toLongOrZero(): Long = if (this.isEmpty()) 0 else this.toLong()
 fun Long.isNotZero(): Boolean = this != ZERO_LONG
 fun Long.isZero(): Boolean = this == ZERO_LONG
+fun Int.isZero(): Boolean = this == ZERO_INT
+
+fun String.toMillis(): Long {
+    var timeInMillis = 0L
+    this.fillWithZeros().chunked(2).fastForEachIndexed { i, s ->
+        when (i) {
+            0 -> timeInMillis += TimeUnit.HOURS.toMillis(s.toLong())
+            1 -> timeInMillis += TimeUnit.MINUTES.toMillis(s.toLong())
+            2 -> timeInMillis += TimeUnit.SECONDS.toMillis(s.toLong())
+        }
+    }
+    return timeInMillis
+}
+
+fun Int.toStringOrEmpty(): String = if (this.isZero()) EMPTY else this.toString()
+fun Int.secondToString(): String = if (this in 0..9) "$ZERO_STRING$this" else this.toStringOrEmpty()
+
+fun String.removeExtraColon(): String =
+    if (this.first().toString() == COLON) takeLast(length - 1) else this
+
+fun Long.toHhMmSs(): String {
+    val seconds = ((this / 1000) % 60).toInt().secondToString()
+    val minutes = ((this / (1000 * 60) % 60)).toInt().toStringOrEmpty()
+    val hours = ((this / (1000 * 60 * 60) % 24)).toInt().toStringOrEmpty()
+    var formattedTime = "$hours$COLON$minutes$COLON$seconds"
+    while (formattedTime.isNotEmpty() && formattedTime.first().toString() == COLON) {
+        formattedTime = formattedTime.removeExtraColon()
+    }
+    return formattedTime
+}

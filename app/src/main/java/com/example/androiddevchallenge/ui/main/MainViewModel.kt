@@ -22,7 +22,6 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.switchMap
 import com.example.androiddevchallenge.countdown.CountDownManager
 import com.example.androiddevchallenge.manager.PreferenceManager
-import com.example.androiddevchallenge.util.isNotZero
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 

@@ -15,10 +15,6 @@
  */
 package com.example.androiddevchallenge.ui.add
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -26,7 +22,6 @@ import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -34,16 +29,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Backspace
-import androidx.compose.material.icons.outlined.PlayArrow
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -52,7 +43,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -61,13 +51,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.androiddevchallenge.R
 import com.example.androiddevchallenge.manager.DataManager
+import com.example.androiddevchallenge.ui.component.StartButton
 import com.example.androiddevchallenge.ui.theme.JettimerTheme
 import com.example.androiddevchallenge.util.EMPTY
 import com.example.androiddevchallenge.util.ThemedPreview
 import com.example.androiddevchallenge.util.fillWithZeros
 import com.example.androiddevchallenge.util.firstInputIsZero
 import com.example.androiddevchallenge.util.removeLast
-import com.example.androiddevchallenge.util.toLongOrZero
+import com.example.androiddevchallenge.util.toMillis
 
 @Composable
 fun AddScreen(viewModel: AddViewModel, modifier: Modifier, navigateToMain: () -> Unit) {
@@ -115,36 +106,7 @@ fun AddScreenBody(
         Dial(columns = dialColumns) {
             if (textState.length < 6 && !textState.firstInputIsZero(it)) textState += it
         }
-        StartButton(textState.isNotEmpty()) { navigateToMain(textState.toLongOrZero()) }
-    }
-}
-
-@OptIn(ExperimentalAnimationApi::class)
-@Composable
-fun StartButton(visible: Boolean, navigateToMain: () -> Unit) {
-    BoxWithConstraints(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
-        val height = with(LocalDensity.current) { maxHeight.toPx().toInt() }
-        AnimatedVisibility(
-            visible = visible,
-            enter = slideInVertically(initialOffsetY = { height }),
-            exit = slideOutVertically(targetOffsetY = { height })
-        ) {
-            IconButton(
-                onClick = navigateToMain,
-                modifier = Modifier
-                    .size(60.dp)
-                    .background(
-                        color = MaterialTheme.colors.secondaryVariant,
-                        shape = CircleShape
-                    )
-            ) {
-                Icon(
-                    imageVector = Icons.Outlined.PlayArrow,
-                    contentDescription = stringResource(R.string.label_start),
-                    tint = JettimerTheme.colors.textVariantColor
-                )
-            }
-        }
+        StartButton(visible = textState.isNotEmpty(), modifier = Modifier.fillMaxSize()) { navigateToMain(textState.toMillis()) }
     }
 }
 

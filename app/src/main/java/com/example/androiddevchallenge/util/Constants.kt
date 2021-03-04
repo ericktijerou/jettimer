@@ -18,4 +18,6 @@ package com.example.androiddevchallenge.util
 const val EMPTY = ""
 const val ZERO_STRING = "0"
 const val ZERO_LONG = 0L
+const val ZERO_INT = 0
 const val MAX_LENGTH_TIMER = 6
+const val COLON = ":"
