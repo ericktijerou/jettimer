@@ -61,6 +61,7 @@ private val LightTimerColorPalette = JettimerColors(
     textPrimaryColor = Color.Black,
     textSecondaryColor = TextSecondaryLight,
     searchBoxColor = GraySearchBoxLight,
+    textVariantColor = Color.White,
     isDark = false
 )
 
@@ -68,6 +69,7 @@ private val DarkTimerColorPalette = JettimerColors(
     textPrimaryColor = Color.White,
     textSecondaryColor = TextSecondaryDark,
     searchBoxColor = GraySearchBoxDark,
+    textVariantColor = Color.Black,
     isDark = true
 )
 
@@ -111,6 +113,7 @@ class JettimerColors(
     textPrimaryColor: Color,
     textSecondaryColor: Color,
     searchBoxColor: Color,
+    textVariantColor: Color,
     isDark: Boolean
 ) {
     var textPrimaryColor by mutableStateOf(textPrimaryColor)
@@ -119,6 +122,8 @@ class JettimerColors(
         private set
     var searchBoxColor by mutableStateOf(searchBoxColor)
         private set
+    var textVariantColor by mutableStateOf(textVariantColor)
+        private set
     var isDark by mutableStateOf(isDark)
         private set
 
@@ -126,6 +131,7 @@ class JettimerColors(
         textPrimaryColor = other.textPrimaryColor
         textSecondaryColor = other.textSecondaryColor
         searchBoxColor = other.searchBoxColor
+        textVariantColor = other.textVariantColor
         isDark = other.isDark
     }
 }

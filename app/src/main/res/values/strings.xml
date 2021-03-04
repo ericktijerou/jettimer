@@ -13,4 +13,5 @@
     <string name="label_timer">Timer</string>
     <string name="label_actions">Actions</string>
     <string name="label_delete">Delete</string>
+    <string name="label_start">Start</string>
 </resources>
