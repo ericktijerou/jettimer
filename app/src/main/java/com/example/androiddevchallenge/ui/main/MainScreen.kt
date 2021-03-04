@@ -15,20 +15,30 @@
  */
 package com.example.androiddevchallenge.ui.main
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import com.example.androiddevchallenge.ui.component.Timer
 import com.example.androiddevchallenge.util.ThemedPreview
+import com.example.androiddevchallenge.util.isZero
 
 @Composable
 fun MainScreen(viewModel: MainViewModel, modifier: Modifier, navigateToAdd: () -> Unit) {
-    if (!viewModel.hasTimer()) {
+    val time = viewModel.getTimer()
+    if (time.isZero()) {
         navigateToAdd()
         return
     }
-    val time: Long by viewModel.tick.observeAsState(0)
+    val tick: Long by viewModel.tick.observeAsState(0)
     MainScreenBody("")
 }
 
@@ -36,6 +46,12 @@ fun MainScreen(viewModel: MainViewModel, modifier: Modifier, navigateToAdd: () -
 fun MainScreenBody(
     formattedTime: String = ""
 ) {
+    Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
+        Box(modifier = Modifier.padding(32.dp)) {
+            Timer(progress = 0.1f, modifier = Modifier.fillMaxSize())
+            Text(text = formattedTime)
+        }
+    }
 }
 
 @Preview("Main screen body")

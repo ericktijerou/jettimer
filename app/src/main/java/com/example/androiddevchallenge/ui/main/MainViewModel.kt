@@ -41,5 +41,5 @@ class MainViewModel @Inject constructor(
         _tick.postValue(millisUntilFinished)
     }
 
-    fun hasTimer() = preferenceManager.timeInMillis.isNotZero()
+    fun getTimer() = preferenceManager.timeInMillis
 }
