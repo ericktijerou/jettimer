@@ -15,10 +15,28 @@
  */
 package com.example.androiddevchallenge.ui
 
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.navigate
+import androidx.navigation.compose.popUpTo
 import androidx.navigation.compose.rememberNavController
+import com.example.androiddevchallenge.R
+import com.example.androiddevchallenge.ui.add.AddScreen
 import com.example.androiddevchallenge.ui.main.MainScreen
 import com.example.androiddevchallenge.ui.theme.JettimerTheme
 import com.example.androiddevchallenge.util.Screen
@@ -29,13 +47,53 @@ import dev.chrisbanes.accompanist.insets.ProvideWindowInsets
 fun JettimerApp() {
     ProvideWindowInsets {
         JettimerTheme {
-            val navController = rememberNavController()
-            NavHost(navController, startDestination = Screen.Main.route) {
-                composable(Screen.Main.route) {
-                    MainScreen(viewModel = it.hiltNavGraphViewModel())
+            Scaffold(
+                topBar = { MainAppBar() }
+            ) { innerPadding ->
+                val modifier = Modifier.padding(innerPadding)
+                val navController = rememberNavController()
+                NavHost(navController, startDestination = Screen.Main.route) {
+                    composable(Screen.Main.route) {
+                        MainScreen(viewModel = it.hiltNavGraphViewModel(), modifier = modifier) {
+                            navController.navigate(route = Screen.AddTimer.route) {
+                                popUpTo(Screen.Main.route) { inclusive = true }
+                            }
+                        }
+                    }
+                    composable(Screen.AddTimer.route) {
+                        AddScreen(viewModel = it.hiltNavGraphViewModel(), modifier = modifier) {
+                            navController.navigate(route = Screen.Main.route) {
+                                popUpTo(Screen.AddTimer.route) { inclusive = true }
+                            }
+                        }
+                    }
                 }
-                // Add new screen
             }
         }
     }
+}
+
+@Composable
+fun MainAppBar(
+    modifier: Modifier = Modifier,
+    backgroundColor: Color = MaterialTheme.colors.primary
+) {
+    TopAppBar(
+        title = {
+            Text(
+                text = stringResource(R.string.label_timer),
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
+            )
+        },
+        actions = {
+            Icon(
+                imageVector = Icons.Filled.MoreVert,
+                contentDescription = stringResource(R.string.label_actions)
+            )
+        },
+        backgroundColor = backgroundColor,
+        modifier = modifier,
+        elevation = 0.dp
+    )
 }

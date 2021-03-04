@@ -10,4 +10,7 @@
       the License.
       -->
     <string name="app_name">AndroidDevChallenge</string>
+    <string name="label_timer">Timer</string>
+    <string name="label_actions">Actions</string>
+    <string name="label_delete">Delete</string>
 </resources>

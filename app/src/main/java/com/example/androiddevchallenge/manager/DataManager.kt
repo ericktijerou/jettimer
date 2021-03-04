@@ -13,12 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.androiddevchallenge.countdown
+package com.example.androiddevchallenge.manager
 
-import kotlinx.coroutines.flow.Flow
-import javax.inject.Singleton
-
-@Singleton
-interface CountDownManager {
-    fun start(millisUntilFinished: Long): Flow<Long>
+object DataManager {
+    val columns by lazy { listOf(firstColumn, secondColumn, thirdColumn) }
+    private val firstColumn by lazy { listOf("1", "4", "7") }
+    private val secondColumn by lazy { listOf("2", "5", "8", "0") }
+    private val thirdColumn by lazy { listOf("3", "6", "9") }
 }

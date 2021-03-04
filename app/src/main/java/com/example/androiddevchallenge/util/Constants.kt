@@ -13,12 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.androiddevchallenge.countdown
+package com.example.androiddevchallenge.util
 
-import kotlinx.coroutines.flow.Flow
-import javax.inject.Singleton
-
-@Singleton
-interface CountDownManager {
-    fun start(millisUntilFinished: Long): Flow<Long>
-}
+const val EMPTY = ""
+const val ZERO_STRING = "0"
+const val MAX_LENGTH_TIMER = 6

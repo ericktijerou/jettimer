@@ -13,32 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.androiddevchallenge.ui.main
+package com.example.androiddevchallenge.ui.add
 
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
-import androidx.lifecycle.switchMap
-import com.example.androiddevchallenge.countdown.CountDownManager
+import com.example.androiddevchallenge.manager.DataManager
 import com.example.androiddevchallenge.manager.PreferenceManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class MainViewModel @Inject constructor(
-    private val countDownManager: CountDownManager,
-    private val preferenceManager: PreferenceManager
-) :
+class AddViewModel @Inject constructor(private val preferenceManager: PreferenceManager, private val dataManager: DataManager) :
     ViewModel() {
 
-    private val _tick = MutableLiveData<Long>(0)
-    private val result = Transformations.map(_tick) { countDownManager.start(it) }
-    val tick = result.switchMap { it.asLiveData() }
-
-    fun start(millisUntilFinished: Long) {
-        _tick.postValue(millisUntilFinished)
+    fun setTimer() {
+        preferenceManager.hasTimer = true
     }
 
-    fun hasTimer() = preferenceManager.hasTimer
+    fun getColumns() = dataManager.columns
 }

@@ -15,10 +15,41 @@
  */
 package com.example.androiddevchallenge.ui.main
 
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
+import com.example.androiddevchallenge.util.ThemedPreview
 
 @Composable
-fun MainScreen(viewModel: MainViewModel) {
-    Text(text = "Ready... Set... GO!")
+fun MainScreen(viewModel: MainViewModel, modifier: Modifier, navigateToAdd: () -> Unit) {
+    if (!viewModel.hasTimer()) {
+        navigateToAdd()
+        return
+    }
+    val time: Long by viewModel.tick.observeAsState(0)
+    MainScreenBody("")
+}
+
+@Composable
+fun MainScreenBody(
+    formattedTime: String = ""
+) {
+}
+
+@Preview("Main screen body")
+@Composable
+fun PreviewHomeScreenBody() {
+    ThemedPreview {
+        MainScreenBody()
+    }
+}
+
+@Preview("Main screen body dark")
+@Composable
+fun PreviewHomeScreenBodyDark() {
+    ThemedPreview(darkTheme = true) {
+        MainScreenBody()
+    }
 }
