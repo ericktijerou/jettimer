@@ -30,4 +30,6 @@ class AddViewModel @Inject constructor(private val preferenceManager: Preference
     }
 
     fun getColumns() = dataManager.columns
+
+    fun getTimeUnits() = dataManager.timeUnits
 }

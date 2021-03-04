@@ -30,6 +30,12 @@ private val fonts = FontFamily(
     Font(R.font.lato_bold, FontWeight.Bold)
 )
 
+private val jostFonts = FontFamily(
+    Font(R.font.jost_regular, FontWeight.Normal),
+    Font(R.font.jost_medium, FontWeight.W500),
+    Font(R.font.jost_bold, FontWeight.Bold)
+)
+
 val typography = typographyFromDefaults(
     h1 = TextStyle(
         fontFamily = fonts,
@@ -41,10 +47,10 @@ val typography = typographyFromDefaults(
     ),
     h3 = TextStyle(
         fontFamily = fonts,
-        fontWeight = FontWeight.Bold
+        fontWeight = FontWeight.Bold,
     ),
     h4 = TextStyle(
-        fontFamily = fonts,
+        fontFamily = jostFonts,
         fontWeight = FontWeight.Bold,
         lineHeight = 40.sp
     ),
