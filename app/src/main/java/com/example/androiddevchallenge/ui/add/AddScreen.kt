@@ -120,7 +120,7 @@ fun TimerValue(
     ) {
         value.chunked(2).forEachIndexed { index, s ->
             Row(
-                modifier = Modifier.padding(10.dp),
+                modifier = Modifier.padding(8.dp),
                 horizontalArrangement = Arrangement.End,
                 verticalAlignment = Alignment.Bottom
             ) {
@@ -153,7 +153,7 @@ fun TimerValue(
                     onClick = onDelete,
                     onLongClick = onDeleteAll,
                     interactionSource = remember { MutableInteractionSource() },
-                    indication = rememberRipple(bounded = false, radius = 40.dp)
+                    indication = rememberRipple(bounded = false, radius = 32.dp)
                 )
         )
     }
