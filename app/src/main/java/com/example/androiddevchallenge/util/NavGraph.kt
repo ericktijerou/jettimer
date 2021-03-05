@@ -23,7 +23,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavBackStackEntry
 
 sealed class Screen(val route: String) {
-    object Main : Screen("main/{autoplay}"){
+    object Main : Screen("main/{autoplay}") {
         const val ARG_AUTO_PLAY: String = "autoplay"
         fun route(autoplay: Boolean) = "main/$autoplay"
     }

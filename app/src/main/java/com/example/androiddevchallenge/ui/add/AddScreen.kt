@@ -17,7 +17,6 @@ package com.example.androiddevchallenge.ui.add
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
@@ -75,7 +74,7 @@ import kotlinx.coroutines.delay
 fun AddScreen(viewModel: AddViewModel, modifier: Modifier, navigateToMain: () -> Unit) {
     val (isFinish, setFinish) = remember { mutableStateOf(false) }
     BoxWithConstraints {
-        val offsetY = with(LocalDensity.current) { maxHeight.toPx().toInt()/2 }
+        val offsetY = with(LocalDensity.current) { maxHeight.toPx().toInt() / 2 }
         AnimatedVisibility(
             visible = !isFinish,
             exit = slideOutVertically(targetOffsetY = { offsetY }) + fadeOut(),

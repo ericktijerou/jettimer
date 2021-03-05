@@ -54,14 +54,19 @@ import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun MainScreen(viewModel: MainViewModel, modifier: Modifier, autoPlay: Boolean, navigateToAdd: () -> Unit) {
+fun MainScreen(
+    viewModel: MainViewModel,
+    modifier: Modifier,
+    autoPlay: Boolean,
+    navigateToAdd: () -> Unit
+) {
     val time = viewModel.getTimer()
     if (time.isZero()) {
         navigateToAdd()
         return
     }
     val (isFinish, setFinish) = remember { mutableStateOf(false) }
-    val tick: Long by viewModel.tick.observeAsState(time)
+    val tick: Long by viewModel.tick.observeAsState(time / 1000)
     if (autoPlay) viewModel.start(time)
     BoxWithConstraints {
         val offsetY = with(LocalDensity.current) { maxHeight.toPx().toInt() / 2 }
@@ -103,7 +108,7 @@ fun MainScreenBody(
 ) {
     ConstraintLayout(modifier = modifier) {
         val (startButton, timer, label, delete) = createRefs()
-        val progress = tick.toFloat() / time.toFloat()
+        val progress = tick.toFloat() * 1000 / time.toFloat()
         val animatedProgress by animateFloatAsState(
             targetValue = progress,
             animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec
@@ -146,10 +151,13 @@ fun MainScreenBody(
                     linkTo(start = parent.start, end = parent.end)
                 }
         )
-        Button(onClick = onDelete, elevation = null, modifier = Modifier.constrainAs(delete) {
-            linkTo(top = startButton.top, bottom = startButton.bottom)
-            start.linkTo(parent.start, margin = 16.dp)
-        }) {
+        Button(
+            onClick = onDelete, elevation = null,
+            modifier = Modifier.constrainAs(delete) {
+                linkTo(top = startButton.top, bottom = startButton.bottom)
+                start.linkTo(parent.start, margin = 16.dp)
+            }
+        ) {
             Text(
                 text = stringResource(R.string.label_delete),
                 style = MaterialTheme.typography.body2.copy(

@@ -16,6 +16,7 @@
 package com.example.androiddevchallenge.util
 
 import androidx.compose.ui.util.fastForEachIndexed
+import java.math.BigDecimal
 import java.util.concurrent.TimeUnit
 
 fun String.fillWithZeros() = this.padStart(MAX_LENGTH_TIMER, ZERO_STRING.first())
@@ -37,17 +38,23 @@ fun String.toMillis(): Long {
     return timeInMillis
 }
 
+fun Float.roundUp(): Int = this.toBigDecimal().setScale(0, BigDecimal.ROUND_UP).intValueExact()
+
 fun Int.toStringOrEmpty(): String = if (this.isZero()) EMPTY else this.toString()
-fun Int.secondToString(): String = if (this in 0..9) "$ZERO_STRING$this" else this.toStringOrEmpty()
+fun Int.toFormattedString(): String =
+    if (this in 0..9) "$ZERO_STRING$this" else this.toStringOrEmpty()
+
+fun Int.minuteToString(hasHour: Boolean): String =
+    if (hasHour) this.toFormattedString() else this.toStringOrEmpty()
 
 fun String.removeExtraColon(): String =
     if (this.first().toString() == COLON) takeLast(length - 1) else this
 
 fun Long.toHhMmSs(): String {
-    val seconds = ((this / 1000) % 60).toInt().secondToString()
-    val minutes = ((this / (1000 * 60) % 60)).toInt().toStringOrEmpty()
-    val hours = ((this / (1000 * 60 * 60) % 24)).toInt().toStringOrEmpty()
-    var formattedTime = "$hours$COLON$minutes$COLON$seconds"
+    val seconds = (this % 60).toInt().toFormattedString()
+    val minutes = ((this / 60) % 60).toInt()
+    val hours = ((this / (60 * 60)) % 24).toInt().toStringOrEmpty()
+    var formattedTime = "$hours$COLON${minutes.minuteToString(hours.isNotEmpty())}$COLON$seconds"
     while (formattedTime.isNotEmpty() && formattedTime.first().toString() == COLON) {
         formattedTime = formattedTime.removeExtraColon()
     }
