@@ -25,10 +25,16 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Button
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProgressIndicatorDefaults
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Pause
+import androidx.compose.material.icons.outlined.PlayArrow
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -44,10 +50,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.example.androiddevchallenge.R
-import com.example.androiddevchallenge.ui.component.StartButton
 import com.example.androiddevchallenge.ui.component.Timer
 import com.example.androiddevchallenge.ui.theme.JettimerTheme
 import com.example.androiddevchallenge.util.ThemedPreview
+import com.example.androiddevchallenge.util.TimerState
 import com.example.androiddevchallenge.util.isZero
 import com.example.androiddevchallenge.util.toHhMmSs
 import kotlinx.coroutines.delay
@@ -67,7 +73,8 @@ fun MainScreen(
     }
     val (isFinish, setFinish) = remember { mutableStateOf(false) }
     val tick: Long by viewModel.tick.observeAsState(time / 1000)
-    if (autoPlay) viewModel.start(time)
+    if (autoPlay) viewModel.startTimer(time)
+    val timerState: TimerState by viewModel.timerState.observeAsState(TimerState.Stopped)
     BoxWithConstraints {
         val offsetY = with(LocalDensity.current) { maxHeight.toPx().toInt() / 2 }
         AnimatedVisibility(
@@ -82,7 +89,8 @@ fun MainScreen(
                 modifier = modifier
                     .background(color = MaterialTheme.colors.primary)
                     .fillMaxSize(),
-                onStart = { viewModel.start(time) },
+                timerState = timerState,
+                onActionClick = { viewModel.onActionClick(timerState, time) },
                 onDelete = {
                     setFinish(true)
                 }
@@ -103,7 +111,8 @@ fun MainScreenBody(
     time: Long,
     tick: Long,
     modifier: Modifier = Modifier,
-    onStart: () -> Unit,
+    timerState: TimerState,
+    onActionClick: () -> Unit,
     onDelete: () -> Unit
 ) {
     ConstraintLayout(modifier = modifier) {
@@ -142,15 +151,26 @@ fun MainScreenBody(
                 )
             }
         )
-        StartButton(
-            visible = true,
-            onClick = onStart,
+        IconButton(
+            onClick = onActionClick,
             modifier = Modifier
+                .size(56.dp)
+                .background(
+                    color = MaterialTheme.colors.secondaryVariant,
+                    shape = CircleShape
+                )
                 .constrainAs(startButton) {
                     bottom.linkTo(parent.bottom, margin = 52.dp)
                     linkTo(start = parent.start, end = parent.end)
                 }
-        )
+        ) {
+            val icon = if (timerState == TimerState.Started) Icons.Filled.Pause else Icons.Outlined.PlayArrow
+            Icon(
+                imageVector = icon,
+                contentDescription = stringResource(R.string.label_start),
+                tint = JettimerTheme.colors.textVariantColor
+            )
+        }
         Button(
             onClick = onDelete, elevation = null,
             modifier = Modifier.constrainAs(delete) {
@@ -174,7 +194,13 @@ fun MainScreenBody(
 @Composable
 fun PreviewHomeScreenBody() {
     ThemedPreview {
-        MainScreenBody(time = 36000, tick = 3000, onStart = {}, onDelete = {})
+        MainScreenBody(
+            time = 36000,
+            tick = 3000,
+            timerState = TimerState.Started,
+            onActionClick = {},
+            onDelete = {}
+        )
     }
 }
 
@@ -182,6 +208,12 @@ fun PreviewHomeScreenBody() {
 @Composable
 fun PreviewHomeScreenBodyDark() {
     ThemedPreview(darkTheme = true) {
-        MainScreenBody(time = 36000, tick = 3000, onStart = {}, onDelete = {})
+        MainScreenBody(
+            time = 36000,
+            tick = 3000,
+            timerState = TimerState.Started,
+            onActionClick = {},
+            onDelete = {}
+        )
     }
 }

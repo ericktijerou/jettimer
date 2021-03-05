@@ -15,14 +15,19 @@
  */
 package com.example.androiddevchallenge.ui.main
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
-import androidx.lifecycle.switchMap
+import androidx.lifecycle.liveData
 import com.example.androiddevchallenge.countdown.CountDownManager
 import com.example.androiddevchallenge.manager.PreferenceManager
+import com.example.androiddevchallenge.util.TimerState
+import com.example.androiddevchallenge.util.ZERO_LONG
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
 @HiltViewModel
@@ -32,17 +37,43 @@ class MainViewModel @Inject constructor(
 ) :
     ViewModel() {
 
-    private val _tick = MutableLiveData<Long>()
-    private val result = Transformations.map(_tick) { countDownManager.start(it) }
-    val tick = result.switchMap { it.asLiveData() }
+    private val _timerState = MutableLiveData<TimerState>()
+    val timerState: LiveData<TimerState> = _timerState
 
-    fun start(millisUntilFinished: Long) {
+    private var job = SupervisorJob()
+
+    private val _tick = MutableLiveData<Long>()
+    val tick = Transformations.switchMap(_tick) {
+        job = SupervisorJob()
+        liveData(Dispatchers.Main + job) {
+            countDownManager.start(it).collect { tick ->
+                if (tick == ZERO_LONG) _timerState.value = TimerState.Stopped
+                emit(tick)
+            }
+        }
+    }
+
+    fun startTimer(millisUntilFinished: Long) {
+        job.cancel()
         _tick.postValue(millisUntilFinished)
+        _timerState.value = TimerState.Started
+    }
+
+    private fun stopTimer() {
+        job.cancel()
+        _timerState.value = TimerState.Stopped
     }
 
     fun getTimer() = preferenceManager.timeInMillis
 
     fun clearTimer() {
         preferenceManager.timeInMillis = 0
+    }
+
+    fun onActionClick(timerState: TimerState, time: Long) {
+        when (timerState) {
+            TimerState.Started -> stopTimer()
+            TimerState.Stopped -> startTimer(time)
+        }
     }
 }
