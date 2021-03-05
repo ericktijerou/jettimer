@@ -18,6 +18,7 @@ package com.example.androiddevchallenge.countdown
 import android.os.CountDownTimer
 import com.example.androiddevchallenge.util.roundUp
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.callbackFlow
 
@@ -36,6 +37,6 @@ class CountDownManagerImpl : CountDownManager {
         }
         ensureActive()
         timer.start()
-        invokeOnClose { timer.cancel() }
+        awaitClose { timer.cancel() }
     }
 }
