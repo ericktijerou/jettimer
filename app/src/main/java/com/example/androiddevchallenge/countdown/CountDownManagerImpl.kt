@@ -19,7 +19,6 @@ import android.os.CountDownTimer
 import com.example.androiddevchallenge.util.roundUp
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.callbackFlow
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -35,7 +34,6 @@ class CountDownManagerImpl : CountDownManager {
                 offer(remainingTime.toLong())
             }
         }
-        ensureActive()
         timer.start()
         awaitClose { timer.cancel() }
     }
