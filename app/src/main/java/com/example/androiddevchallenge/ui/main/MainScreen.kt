@@ -15,8 +15,14 @@
  */
 package com.example.androiddevchallenge.ui.main
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.MaterialTheme
@@ -24,9 +30,13 @@ import androidx.compose.material.ProgressIndicatorDefaults
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -40,7 +50,9 @@ import com.example.androiddevchallenge.ui.theme.JettimerTheme
 import com.example.androiddevchallenge.util.ThemedPreview
 import com.example.androiddevchallenge.util.isZero
 import com.example.androiddevchallenge.util.toHhMmSs
+import kotlinx.coroutines.delay
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun MainScreen(viewModel: MainViewModel, modifier: Modifier, navigateToAdd: () -> Unit) {
     val time = viewModel.getTimer()
@@ -48,19 +60,36 @@ fun MainScreen(viewModel: MainViewModel, modifier: Modifier, navigateToAdd: () -
         navigateToAdd()
         return
     }
+    val (isFinish, setFinish) = remember { mutableStateOf(false) }
     val tick: Long by viewModel.tick.observeAsState(0)
-    MainScreenBody(
-        time = time,
-        tick = tick,
-        modifier = modifier
-            .background(color = MaterialTheme.colors.primary)
-            .fillMaxSize(),
-        onStart = { viewModel.start(time) },
-        onDelete = {
+    BoxWithConstraints {
+        val offsetY = with(LocalDensity.current) { maxHeight.toPx().toInt()/2 }
+        AnimatedVisibility(
+            visible = !isFinish,
+            exit = slideOutVertically(targetOffsetY = { -offsetY }) + fadeOut(),
+            enter = slideInVertically(initialOffsetY = { -offsetY }),
+            initiallyVisible = false
+        ) {
+            MainScreenBody(
+                time = time,
+                tick = tick,
+                modifier = modifier
+                    .background(color = MaterialTheme.colors.primary)
+                    .fillMaxSize(),
+                onStart = { viewModel.start(time) },
+                onDelete = {
+                    setFinish(true)
+                }
+            )
+        }
+    }
+    LaunchedEffect(isFinish) {
+        if (isFinish) {
+            delay(100)
             viewModel.clearTimer()
             navigateToAdd()
         }
-    )
+    }
 }
 
 @Composable
