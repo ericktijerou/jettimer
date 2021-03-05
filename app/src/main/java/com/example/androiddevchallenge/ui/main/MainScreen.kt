@@ -63,7 +63,6 @@ fun MainScreen(viewModel: MainViewModel, modifier: Modifier, autoPlay: Boolean, 
     val (isFinish, setFinish) = remember { mutableStateOf(false) }
     val tick: Long by viewModel.tick.observeAsState(time)
     if (autoPlay) viewModel.start(time)
-    println("holaa  + $autoPlay")
     BoxWithConstraints {
         val offsetY = with(LocalDensity.current) { maxHeight.toPx().toInt() / 2 }
         AnimatedVisibility(
