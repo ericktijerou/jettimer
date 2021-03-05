@@ -136,7 +136,7 @@ fun AddScreenBody(
         }
         StartButton(
             visible = textState.isNotEmpty(),
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize().padding(bottom = 52.dp)
         ) { navigateToMain(textState.toMillis()) }
     }
 }

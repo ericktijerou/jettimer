@@ -21,6 +21,7 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Icon
@@ -40,7 +41,7 @@ import com.example.androiddevchallenge.ui.theme.JettimerTheme
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun StartButton(visible: Boolean, modifier: Modifier, onClick: () -> Unit) {
-    BoxWithConstraints(contentAlignment = Alignment.Center, modifier = modifier) {
+    BoxWithConstraints(contentAlignment = Alignment.BottomCenter, modifier = modifier) {
         val height = with(LocalDensity.current) { maxHeight.toPx().toInt() }
         AnimatedVisibility(
             visible = visible,
@@ -50,7 +51,7 @@ fun StartButton(visible: Boolean, modifier: Modifier, onClick: () -> Unit) {
             IconButton(
                 onClick = onClick,
                 modifier = Modifier
-                    .size(60.dp)
+                    .size(56.dp)
                     .background(
                         color = MaterialTheme.colors.secondaryVariant,
                         shape = CircleShape

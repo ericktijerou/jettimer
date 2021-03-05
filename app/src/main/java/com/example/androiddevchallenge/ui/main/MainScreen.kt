@@ -25,10 +25,10 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
+import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProgressIndicatorDefaults
 import androidx.compose.material.Text
-import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -63,7 +63,7 @@ fun MainScreen(viewModel: MainViewModel, modifier: Modifier, navigateToAdd: () -
     val (isFinish, setFinish) = remember { mutableStateOf(false) }
     val tick: Long by viewModel.tick.observeAsState(0)
     BoxWithConstraints {
-        val offsetY = with(LocalDensity.current) { maxHeight.toPx().toInt()/2 }
+        val offsetY = with(LocalDensity.current) { maxHeight.toPx().toInt() / 2 }
         AnimatedVisibility(
             visible = !isFinish,
             exit = slideOutVertically(targetOffsetY = { -offsetY }) + fadeOut(),
@@ -140,13 +140,12 @@ fun MainScreenBody(
             visible = true,
             onClick = onStart,
             modifier = Modifier
-                .size(60.dp)
                 .constrainAs(startButton) {
-                    bottom.linkTo(parent.bottom, margin = 16.dp)
+                    bottom.linkTo(parent.bottom, margin = 52.dp)
                     linkTo(start = parent.start, end = parent.end)
                 }
         )
-        TextButton(onClick = onDelete, modifier = Modifier.constrainAs(delete) {
+        Button(onClick = onDelete, elevation = null, modifier = Modifier.constrainAs(delete) {
             linkTo(top = startButton.top, bottom = startButton.bottom)
             start.linkTo(parent.start, margin = 16.dp)
         }) {
