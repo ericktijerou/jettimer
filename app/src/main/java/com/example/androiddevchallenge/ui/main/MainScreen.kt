@@ -54,14 +54,16 @@ import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun MainScreen(viewModel: MainViewModel, modifier: Modifier, navigateToAdd: () -> Unit) {
+fun MainScreen(viewModel: MainViewModel, modifier: Modifier, autoPlay: Boolean, navigateToAdd: () -> Unit) {
     val time = viewModel.getTimer()
     if (time.isZero()) {
         navigateToAdd()
         return
     }
     val (isFinish, setFinish) = remember { mutableStateOf(false) }
-    val tick: Long by viewModel.tick.observeAsState(0)
+    val tick: Long by viewModel.tick.observeAsState(time)
+    if (autoPlay) viewModel.start(time)
+    println("holaa  + $autoPlay")
     BoxWithConstraints {
         val offsetY = with(LocalDensity.current) { maxHeight.toPx().toInt() / 2 }
         AnimatedVisibility(

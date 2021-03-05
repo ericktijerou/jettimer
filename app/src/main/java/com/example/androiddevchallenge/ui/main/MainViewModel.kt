@@ -32,7 +32,7 @@ class MainViewModel @Inject constructor(
 ) :
     ViewModel() {
 
-    private val _tick = MutableLiveData<Long>(0)
+    private val _tick = MutableLiveData<Long>()
     private val result = Transformations.map(_tick) { countDownManager.start(it) }
     val tick = result.switchMap { it.asLiveData() }
 

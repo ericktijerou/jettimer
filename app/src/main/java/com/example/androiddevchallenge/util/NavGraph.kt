@@ -23,8 +23,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavBackStackEntry
 
 sealed class Screen(val route: String) {
-    object Main : Screen("main")
-    object AddTimer : Screen("add_timer")
+    object Main : Screen("main/{autoplay}"){
+        const val ARG_AUTO_PLAY: String = "autoplay"
+        fun route(autoplay: Boolean) = "main/$autoplay"
+    }
+    object AddTimer : Screen("addtimer")
 }
 
 @Composable

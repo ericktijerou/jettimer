@@ -30,8 +30,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.navArgument
 import androidx.navigation.compose.navigate
 import androidx.navigation.compose.popUpTo
 import androidx.navigation.compose.rememberNavController
@@ -40,6 +42,7 @@ import com.example.androiddevchallenge.ui.add.AddScreen
 import com.example.androiddevchallenge.ui.main.MainScreen
 import com.example.androiddevchallenge.ui.theme.JettimerTheme
 import com.example.androiddevchallenge.util.Screen
+import com.example.androiddevchallenge.util.Screen.Main.ARG_AUTO_PLAY
 import com.example.androiddevchallenge.util.hiltNavGraphViewModel
 import dev.chrisbanes.accompanist.insets.ProvideWindowInsets
 
@@ -53,8 +56,9 @@ fun JettimerApp() {
                 val modifier = Modifier.padding(innerPadding)
                 val navController = rememberNavController()
                 NavHost(navController, startDestination = Screen.Main.route) {
-                    composable(Screen.Main.route) {
-                        MainScreen(viewModel = it.hiltNavGraphViewModel(), modifier = modifier) {
+                    composable(Screen.Main.route, arguments = listOf(navArgument(ARG_AUTO_PLAY) { type = NavType.BoolType })) {
+                        val autoPlay = it.arguments?.getBoolean(ARG_AUTO_PLAY) ?: false
+                        MainScreen(viewModel = it.hiltNavGraphViewModel(), modifier = modifier, autoPlay = autoPlay) {
                             navController.navigate(route = Screen.AddTimer.route) {
                                 popUpTo(Screen.Main.route) { inclusive = true }
                             }
@@ -62,7 +66,7 @@ fun JettimerApp() {
                     }
                     composable(Screen.AddTimer.route) {
                         AddScreen(viewModel = it.hiltNavGraphViewModel(), modifier = modifier) {
-                            navController.navigate(route = Screen.Main.route) {
+                            navController.navigate(route = Screen.Main.route(true)) {
                                 popUpTo(Screen.AddTimer.route) { inclusive = true }
                             }
                         }
