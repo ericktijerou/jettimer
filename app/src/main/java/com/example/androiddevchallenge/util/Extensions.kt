@@ -38,7 +38,7 @@ fun String.toMillis(): Long {
     return timeInMillis
 }
 
-fun Float.roundUp(): Int = this.toBigDecimal().setScale(0, BigDecimal.ROUND_UP).intValueExact()
+fun Float.roundUp(): Long = this.toBigDecimal().setScale(0, BigDecimal.ROUND_UP).longValueExact()
 
 fun Int.toStringOrEmpty(): String = if (this.isZero()) EMPTY else this.toString()
 fun Int.toFormattedString(): String =

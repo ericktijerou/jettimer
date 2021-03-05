@@ -21,3 +21,6 @@ const val ZERO_LONG = 0L
 const val ZERO_INT = 0
 const val MAX_LENGTH_TIMER = 6
 const val COLON = ":"
+const val ONE_HUNDRED_INT = 1000
+const val ONE_HUNDRED_FLOAT = 1000f
+const val ONE_HUNDRED_LONG = 1000L

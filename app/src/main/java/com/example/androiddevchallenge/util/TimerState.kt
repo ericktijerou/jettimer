@@ -18,4 +18,5 @@ package com.example.androiddevchallenge.util
 sealed class TimerState {
     object Started : TimerState()
     object Stopped : TimerState()
+    object Paused : TimerState()
 }
