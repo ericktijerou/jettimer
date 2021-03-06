@@ -74,12 +74,14 @@ class MainViewModel @Inject constructor(
 
     fun startTimer(millisUntilFinished: Long) {
         visibilityJob.cancel()
+        countDownJob.cancel()
         _timerVisibility.value = true
         _tick.value = millisUntilFinished
         _timerState.value = TimerState.Started
     }
 
     private fun pauseTimer() {
+        visibilityJob.cancel()
         countDownJob.cancel()
         _timerVisibility.value = false
         _timerState.value = TimerState.Paused

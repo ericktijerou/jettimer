@@ -44,7 +44,6 @@ fun Int.toStringOrEmpty(): String = if (this.isZero()) EMPTY else this.toString(
 fun Int.toFormattedString(): String =
     if (this in 0..9) "$ZERO_STRING$this" else this.toStringOrEmpty()
 
-
 fun Int.unitToString(hasHour: Boolean): String =
     if (hasHour) this.toFormattedString() else this.toStringOrEmpty()
 
