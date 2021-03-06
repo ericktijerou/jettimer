@@ -37,9 +37,9 @@ import androidx.compose.material.ProgressIndicatorDefaults
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Pause
-import androidx.compose.material.icons.filled.Stop
+import androidx.compose.material.icons.outlined.Pause
 import androidx.compose.material.icons.outlined.PlayArrow
+import androidx.compose.material.icons.outlined.Stop
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -103,7 +103,8 @@ fun MainScreen(
                 onActionClick = { viewModel.onActionClick(timerState, time) },
                 onDelete = {
                     setFinish(true)
-                }
+                },
+                onOptionTimerClick = { viewModel.onOptionTimerClick(timerState) }
             )
         }
     }
@@ -124,7 +125,8 @@ fun MainScreenBody(
     timerState: TimerState,
     timerVisibility: Boolean,
     onActionClick: () -> Unit,
-    onDelete: () -> Unit
+    onDelete: () -> Unit,
+    onOptionTimerClick: () -> Unit
 ) {
     ConstraintLayout(modifier = modifier) {
         val (actionButtons, timer) = createRefs()
@@ -149,7 +151,8 @@ fun MainScreenBody(
                         bottom = actionButtons.top,
                         bottomMargin = 16.dp
                     )
-                }
+                },
+            onOptionTimerClick = onOptionTimerClick
         )
 
         ActionButtons(
@@ -176,7 +179,8 @@ fun MainTimer(
     tick: Long,
     timerVisibility: Boolean,
     timerState: TimerState,
-    modifier: Modifier
+    modifier: Modifier,
+    onOptionTimerClick: () -> Unit
 ) {
     Box(modifier = modifier, contentAlignment = Alignment.Center) {
         val progressVisibility = if (timerState == TimerState.Finished) timerVisibility else true
@@ -192,7 +196,7 @@ fun MainTimer(
         ConstraintLayout(
             modifier = Modifier.fillMaxSize()
         ) {
-            val (label, timer, actionTimer) = createRefs()
+            val (label, timer, optionTimer) = createRefs()
             TextButton(
                 onClick = { },
                 enabled = false,
@@ -243,15 +247,19 @@ fun MainTimer(
             }
 
             Button(
-                onClick = { },
+                onClick = onOptionTimerClick,
                 elevation = null,
-                modifier = Modifier.constrainAs(actionTimer) {
+                modifier = Modifier.constrainAs(optionTimer) {
                     linkTo(start = parent.start, end = parent.end)
                     bottom.linkTo(parent.bottom, margin = 20.dp)
                 }
             ) {
+                val resId = when (timerState) {
+                    TimerState.Started, TimerState.Finished -> R.string.label_plus_one_minute
+                    TimerState.Stopped, TimerState.Paused -> R.string.label_reset
+                }
                 Text(
-                    text = stringResource(R.string.label_reset),
+                    text = stringResource(resId),
                     style = MaterialTheme.typography.body2.copy(
                         letterSpacing = 0.sp,
                         fontWeight = FontWeight.W400
@@ -288,9 +296,9 @@ fun ActionButtons(
                 }
         ) {
             val icon = when (timerState) {
-                TimerState.Started -> Icons.Filled.Pause
+                TimerState.Started -> Icons.Outlined.Pause
                 TimerState.Paused, TimerState.Stopped -> Icons.Outlined.PlayArrow
-                TimerState.Finished -> Icons.Filled.Stop
+                TimerState.Finished -> Icons.Outlined.Stop
             }
             Icon(
                 imageVector = icon,
@@ -346,7 +354,8 @@ fun PreviewHomeScreenBody() {
             timerState = TimerState.Started,
             timerVisibility = true,
             onActionClick = {},
-            onDelete = {}
+            onDelete = {},
+            onOptionTimerClick = {}
         )
     }
 }
@@ -361,7 +370,8 @@ fun PreviewHomeScreenBodyDark() {
             timerState = TimerState.Started,
             timerVisibility = true,
             onActionClick = {},
-            onDelete = {}
+            onDelete = {},
+            onOptionTimerClick = {}
         )
     }
 }

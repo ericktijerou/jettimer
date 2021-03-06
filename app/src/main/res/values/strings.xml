@@ -17,4 +17,5 @@
     <string name="label_reset">Reset</string>
     <string name="hint_label">Label</string>
     <string name="label_add_timer">Add timer</string>
+    <string name="label_plus_one_minute">+ 1:00</string>
 </resources>
