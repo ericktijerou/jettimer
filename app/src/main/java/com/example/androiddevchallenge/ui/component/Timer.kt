@@ -37,7 +37,7 @@ import kotlin.math.cos
 import kotlin.math.sin
 
 @Composable
-fun Timer(
+fun CiruclarProgressWithThumb(
     progress: Float,
     modifier: Modifier = Modifier,
     color: Color = MaterialTheme.colors.secondaryVariant,

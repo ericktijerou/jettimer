@@ -18,10 +18,12 @@ package com.example.androiddevchallenge.ui.main
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
@@ -41,6 +43,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
@@ -49,8 +52,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.Dimension
 import com.example.androiddevchallenge.R
-import com.example.androiddevchallenge.ui.component.Timer
+import com.example.androiddevchallenge.ui.component.CiruclarProgressWithThumb
 import com.example.androiddevchallenge.ui.theme.JettimerTheme
 import com.example.androiddevchallenge.util.ThemedPreview
 import com.example.androiddevchallenge.util.TimerState
@@ -119,26 +123,51 @@ fun MainScreenBody(
     onDelete: () -> Unit
 ) {
     ConstraintLayout(modifier = modifier) {
-        val (startButton, timer, label, delete) = createRefs()
+        val (actionButtons, timer) = createRefs()
         val progress = 1 - (tick.toFloat() * 1000 / time.toFloat())
         val animatedProgress by animateFloatAsState(
             targetValue = progress,
             animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec
         )
-        Timer(
-            progress = animatedProgress,
+        MainTimer(
+            animatedProgress = animatedProgress,
+            tick = tick,
+            labelVisibility = labelVisibility,
+            modifier = Modifier.constrainAs(timer) {
+                linkTo(
+                    start = parent.start,
+                    top = parent.top,
+                    end = parent.end,
+                    bottom = actionButtons.top,
+                    bottomMargin = 16.dp
+                )
+                width = Dimension.fillToConstraints
+            }
+        )
+
+        ActionButtons(
+            onActionClick = onActionClick,
+            onDelete = onDelete,
+            timerState = timerState,
             modifier = Modifier
-                .size(200.dp)
-                .constrainAs(timer) {
+                .constrainAs(actionButtons) {
+                    bottom.linkTo(parent.bottom, margin = 64.dp)
                     linkTo(
                         start = parent.start,
-                        top = parent.top,
-                        end = parent.end,
-                        bottom = startButton.top
+                        end = parent.end
                     )
+                    width = Dimension.fillToConstraints
                 }
         )
-        if (labelVisibility) {
+    }
+}
+
+@OptIn(ExperimentalAnimationApi::class)
+@Composable
+fun MainTimer(animatedProgress: Float, tick: Long, labelVisibility: Boolean, modifier: Modifier) {
+    Box(modifier = modifier, contentAlignment = Alignment.Center) {
+        CiruclarProgressWithThumb(progress = animatedProgress, modifier.size(200.dp))
+        AnimatedVisibility(visible = labelVisibility, enter = fadeIn(initialAlpha = 0.5f), exit = fadeOut()) {
             Text(
                 text = tick.toHhMmSs(),
                 style = MaterialTheme.typography.h3.copy(
@@ -146,17 +175,20 @@ fun MainScreenBody(
                     letterSpacing = 1.sp
                 ),
                 color = MaterialTheme.colors.secondaryVariant,
-                modifier = Modifier.constrainAs(label) {
-                    linkTo(
-                        start = timer.start,
-                        top = timer.top,
-                        end = timer.end,
-                        bottom = timer.bottom
-                    )
-                }
             )
         }
+    }
+}
 
+@Composable
+fun ActionButtons(
+    modifier: Modifier,
+    timerState: TimerState,
+    onActionClick: () -> Unit,
+    onDelete: () -> Unit
+) {
+    ConstraintLayout(modifier) {
+        val (action, delete) = createRefs()
         IconButton(
             onClick = onActionClick,
             modifier = Modifier
@@ -165,9 +197,11 @@ fun MainScreenBody(
                     color = MaterialTheme.colors.secondaryVariant,
                     shape = CircleShape
                 )
-                .constrainAs(startButton) {
-                    bottom.linkTo(parent.bottom, margin = 52.dp)
-                    linkTo(start = parent.start, end = parent.end)
+                .constrainAs(action) {
+                    linkTo(
+                        start = parent.start,
+                        end = parent.end
+                    )
                 }
         ) {
             val icon =
@@ -181,7 +215,7 @@ fun MainScreenBody(
         Button(
             onClick = onDelete, elevation = null,
             modifier = Modifier.constrainAs(delete) {
-                linkTo(top = startButton.top, bottom = startButton.bottom)
+                linkTo(top = action.top, bottom = action.bottom)
                 start.linkTo(parent.start, margin = 16.dp)
             }
         ) {
