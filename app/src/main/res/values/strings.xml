@@ -14,4 +14,7 @@
     <string name="label_actions">Actions</string>
     <string name="label_delete">Delete</string>
     <string name="label_start">Start</string>
+    <string name="label_reset">Reset</string>
+    <string name="hint_label">Label</string>
+    <string name="label_add_timer">Add timer</string>
 </resources>

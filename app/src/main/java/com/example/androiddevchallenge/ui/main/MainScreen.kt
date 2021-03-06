@@ -29,11 +29,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Button
+import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProgressIndicatorDefaults
 import androidx.compose.material.Text
+import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.outlined.PlayArrow
@@ -134,16 +136,17 @@ fun MainScreenBody(
             animatedProgress = animatedProgress,
             tick = tick,
             labelVisibility = labelVisibility,
-            modifier = Modifier.constrainAs(timer) {
-                linkTo(
-                    start = parent.start,
-                    top = parent.top,
-                    end = parent.end,
-                    bottom = actionButtons.top,
-                    bottomMargin = 16.dp
-                )
-                width = Dimension.fillToConstraints
-            }
+            modifier = Modifier
+                .size(200.dp)
+                .constrainAs(timer) {
+                    linkTo(
+                        start = parent.start,
+                        top = parent.top,
+                        end = parent.end,
+                        bottom = actionButtons.top,
+                        bottomMargin = 16.dp
+                    )
+                }
         )
 
         ActionButtons(
@@ -169,25 +172,73 @@ fun MainTimer(animatedProgress: Float, tick: Long, labelVisibility: Boolean, mod
     Box(modifier = modifier, contentAlignment = Alignment.Center) {
         CircularProgressWithThumb(
             progress = animatedProgress,
-            modifier.size(200.dp),
+            modifier = Modifier.fillMaxSize(),
             strokeWidth = 5.dp,
             thumbSize = 7.dp
         )
-        AnimatedVisibility(
-            visible = labelVisibility,
-            enter = fadeIn(initialAlpha = 0.6f),
-            exit = fadeOut()
+        ConstraintLayout(
+            modifier = Modifier.fillMaxSize()
         ) {
-            val formattedTime = tick.toHhMmSs()
-            Text(
-                text = formattedTime,
-                style = MaterialTheme.typography.h2.copy(
-                    fontSize = formattedTime.calculateFontSize(),
-                    fontWeight = FontWeight.W400,
-                    letterSpacing = 1.sp
-                ),
-                color = MaterialTheme.colors.secondaryVariant,
-            )
+            val (label, timer, actionTimer) = createRefs()
+            TextButton(
+                onClick = { },
+                enabled = false,
+                modifier = Modifier.constrainAs(label) {
+                    linkTo(start = parent.start, end = parent.end)
+                    top.linkTo(parent.top, margin = 20.dp)
+                }
+            ) {
+                Text(
+                    text = stringResource(R.string.hint_label),
+                    color = JettimerTheme.colors.textPrimaryColor.copy(alpha = ContentAlpha.disabled),
+                    style = MaterialTheme.typography.body2.copy(
+                        letterSpacing = 0.sp,
+                        fontWeight = FontWeight.W400
+                    )
+                )
+            }
+            AnimatedVisibility(
+                visible = labelVisibility,
+                enter = fadeIn(initialAlpha = 0.6f),
+                exit = fadeOut(),
+                modifier = Modifier.constrainAs(timer) {
+                    linkTo(
+                        start = parent.start,
+                        top = parent.top,
+                        end = parent.end,
+                        bottom = parent.bottom
+                    )
+                }
+            ) {
+                val formattedTime = tick.toHhMmSs()
+                Text(
+                    text = formattedTime,
+                    style = MaterialTheme.typography.h2.copy(
+                        fontSize = formattedTime.calculateFontSize(),
+                        fontWeight = FontWeight.W400,
+                        letterSpacing = 1.sp
+                    ),
+                    color = MaterialTheme.colors.secondaryVariant,
+                )
+            }
+
+            Button(
+                onClick = { },
+                elevation = null,
+                modifier = Modifier.constrainAs(actionTimer) {
+                    linkTo(start = parent.start, end = parent.end)
+                    bottom.linkTo(parent.bottom, margin = 20.dp)
+                }
+            ) {
+                Text(
+                    text = stringResource(R.string.label_reset),
+                    style = MaterialTheme.typography.body2.copy(
+                        letterSpacing = 0.sp,
+                        fontWeight = FontWeight.W400
+                    ),
+                    color = JettimerTheme.colors.textPrimaryColor
+                )
+            }
         }
     }
 }
@@ -200,7 +251,7 @@ fun ActionButtons(
     onDelete: () -> Unit
 ) {
     ConstraintLayout(modifier) {
-        val (action, delete) = createRefs()
+        val (action, delete, addTimer) = createRefs()
         IconButton(
             onClick = onActionClick,
             modifier = Modifier
@@ -225,7 +276,8 @@ fun ActionButtons(
             )
         }
         Button(
-            onClick = onDelete, elevation = null,
+            onClick = onDelete,
+            elevation = null,
             modifier = Modifier.constrainAs(delete) {
                 linkTo(top = action.top, bottom = action.bottom)
                 start.linkTo(parent.start, margin = 16.dp)
@@ -240,6 +292,25 @@ fun ActionButtons(
                 color = JettimerTheme.colors.textPrimaryColor
             )
         }
+        TextButton(
+            onClick = {},
+            enabled = false,
+            modifier = Modifier
+                .constrainAs(addTimer) {
+                    linkTo(top = action.top, bottom = action.bottom)
+                    end.linkTo(parent.end, margin = 16.dp)
+                }
+        ) {
+            Text(
+                text = stringResource(R.string.label_add_timer),
+                color = JettimerTheme.colors.textPrimaryColor.copy(alpha = ContentAlpha.disabled),
+                style = MaterialTheme.typography.body2.copy(
+                    letterSpacing = 0.sp,
+                    fontWeight = FontWeight.W400
+                )
+            )
+        }
+
     }
 }
 

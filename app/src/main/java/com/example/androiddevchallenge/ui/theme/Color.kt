@@ -30,5 +30,5 @@ val BackgroundDark = Color(0xFF0A0A0A)
 val TextSecondaryLight = Color(0xFF8A8B8D)
 val TextSecondaryDark = Color(0xFF8B8C8F)
 
-val TimerActiveDark = Color(0xFF91B4F2)
+val TimerActiveDark = Color(0xFF6A98E9)
 val TimerActiveLight = Color(0xFF6A98E9)
