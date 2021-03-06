@@ -78,8 +78,8 @@ fun DrawScope.drawThumb(
 ) {
     val internalCenter = Offset(size.width / 2, size.width / 2)
     val radius = size.width / 2 - diameterOffset
-    val mThumbX = (internalCenter.x + radius * cos(-(sweep + startAngle) * Math.PI / 180))
-    val mThumbY = (internalCenter.y - radius * sin(-(sweep + startAngle) * Math.PI / 180))
+    val mThumbX = (internalCenter.x + radius * cos(-(startAngle - sweep) * Math.PI / 180))
+    val mThumbY = (internalCenter.y - radius * sin(-(startAngle - sweep) * Math.PI / 180))
     val middle = Offset(mThumbX.toFloat(), mThumbY.toFloat())
     drawCircle(color = color, radius = dotSizeInPx, center = middle)
 }
@@ -95,7 +95,7 @@ fun DrawScope.drawArcBackground(
     drawArc(
         color = color,
         startAngle = startAngle,
-        sweepAngle = -sweep,
+        sweepAngle = sweep,
         useCenter = false,
         topLeft = Offset(diameterOffset, diameterOffset),
         size = Size(arcDimen, arcDimen),
@@ -114,7 +114,7 @@ fun DrawScope.drawArcIndicator(
     drawArc(
         color = color,
         startAngle = startAngle,
-        sweepAngle = sweep,
+        sweepAngle = -sweep,
         useCenter = false,
         topLeft = Offset(diameterOffset, diameterOffset),
         size = Size(arcDimen, arcDimen),

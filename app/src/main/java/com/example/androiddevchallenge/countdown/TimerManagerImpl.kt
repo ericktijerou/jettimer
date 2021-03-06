@@ -16,27 +16,46 @@
 package com.example.androiddevchallenge.countdown
 
 import android.os.CountDownTimer
-import com.example.androiddevchallenge.util.ONE_HUNDRED_FLOAT
-import com.example.androiddevchallenge.util.ONE_HUNDRED_LONG
+import com.example.androiddevchallenge.util.ONE_THOUSAND_FLOAT
+import com.example.androiddevchallenge.util.ONE_THOUSAND_LONG
 import com.example.androiddevchallenge.util.roundUp
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
+import java.util.Timer
+import java.util.TimerTask
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class CountDownManagerImpl : CountDownManager {
-    override fun start(millisUntilFinished: Long) = callbackFlow<Long> {
-        val timer = object : CountDownTimer(millisUntilFinished, ONE_HUNDRED_LONG) {
+class TimerManagerImpl : TimerManager {
+    override fun startCountDown(millisUntilFinished: Long) = callbackFlow<Long> {
+        val timer = object : CountDownTimer(millisUntilFinished, ONE_THOUSAND_LONG) {
             override fun onFinish() {
                 offer(0L)
                 cancel()
             }
+
             override fun onTick(millisUntilFinished: Long) {
-                val remainingTimeInSeconds = (millisUntilFinished / ONE_HUNDRED_FLOAT).roundUp()
+                val remainingTimeInSeconds = (millisUntilFinished / ONE_THOUSAND_FLOAT).roundUp()
                 offer(remainingTimeInSeconds)
             }
         }
         timer.start()
+        awaitClose { timer.cancel() }
+    }
+
+    override fun startPausedTimer(period: Long) = callbackFlow<Boolean> {
+        val timer = Timer()
+        var time = true
+        timer.scheduleAtFixedRate(
+            object : TimerTask() {
+                override fun run() {
+                    try { offer(time) } catch (e: Exception) {}
+                    time = !time
+                }
+            },
+            0,
+            period
+        )
         awaitClose { timer.cancel() }
     }
 }

@@ -73,6 +73,7 @@ fun MainScreen(
     }
     val (isFinish, setFinish) = remember { mutableStateOf(false) }
     val tick: Long by viewModel.tick.observeAsState(time / 1000)
+    val labelVisibility: Boolean by viewModel.timerVisibility.observeAsState(true)
     if (autoPlay) viewModel.startTimer(time)
     val timerState: TimerState by viewModel.timerState.observeAsState(TimerState.Stopped)
     BoxWithConstraints {
@@ -90,6 +91,7 @@ fun MainScreen(
                     .background(color = MaterialTheme.colors.primary)
                     .fillMaxSize(),
                 timerState = timerState,
+                labelVisibility = labelVisibility,
                 onActionClick = { viewModel.onActionClick(timerState, time) },
                 onDelete = {
                     setFinish(true)
@@ -112,12 +114,13 @@ fun MainScreenBody(
     tick: Long,
     modifier: Modifier = Modifier,
     timerState: TimerState,
+    labelVisibility: Boolean,
     onActionClick: () -> Unit,
     onDelete: () -> Unit
 ) {
     ConstraintLayout(modifier = modifier) {
         val (startButton, timer, label, delete) = createRefs()
-        val progress = tick.toFloat() * 1000 / time.toFloat()
+        val progress = 1 - (tick.toFloat() * 1000 / time.toFloat())
         val animatedProgress by animateFloatAsState(
             targetValue = progress,
             animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec
@@ -135,22 +138,25 @@ fun MainScreenBody(
                     )
                 }
         )
-        Text(
-            text = tick.toHhMmSs(),
-            style = MaterialTheme.typography.h3.copy(
-                fontWeight = FontWeight.W400,
-                letterSpacing = 1.sp
-            ),
-            color = MaterialTheme.colors.secondaryVariant,
-            modifier = Modifier.constrainAs(label) {
-                linkTo(
-                    start = timer.start,
-                    top = timer.top,
-                    end = timer.end,
-                    bottom = timer.bottom
-                )
-            }
-        )
+        if (labelVisibility) {
+            Text(
+                text = tick.toHhMmSs(),
+                style = MaterialTheme.typography.h3.copy(
+                    fontWeight = FontWeight.W400,
+                    letterSpacing = 1.sp
+                ),
+                color = MaterialTheme.colors.secondaryVariant,
+                modifier = Modifier.constrainAs(label) {
+                    linkTo(
+                        start = timer.start,
+                        top = timer.top,
+                        end = timer.end,
+                        bottom = timer.bottom
+                    )
+                }
+            )
+        }
+
         IconButton(
             onClick = onActionClick,
             modifier = Modifier
@@ -164,7 +170,8 @@ fun MainScreenBody(
                     linkTo(start = parent.start, end = parent.end)
                 }
         ) {
-            val icon = if (timerState == TimerState.Started) Icons.Filled.Pause else Icons.Outlined.PlayArrow
+            val icon =
+                if (timerState == TimerState.Started) Icons.Filled.Pause else Icons.Outlined.PlayArrow
             Icon(
                 imageVector = icon,
                 contentDescription = stringResource(R.string.label_start),
@@ -198,6 +205,7 @@ fun PreviewHomeScreenBody() {
             time = 36000,
             tick = 3000,
             timerState = TimerState.Started,
+            labelVisibility = true,
             onActionClick = {},
             onDelete = {}
         )
@@ -212,6 +220,7 @@ fun PreviewHomeScreenBodyDark() {
             time = 36000,
             tick = 3000,
             timerState = TimerState.Started,
+            labelVisibility = true,
             onActionClick = {},
             onDelete = {}
         )

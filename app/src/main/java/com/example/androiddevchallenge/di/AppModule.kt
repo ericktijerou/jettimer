@@ -16,8 +16,8 @@
 package com.example.androiddevchallenge.di
 
 import android.content.Context
-import com.example.androiddevchallenge.countdown.CountDownManager
-import com.example.androiddevchallenge.countdown.CountDownManagerImpl
+import com.example.androiddevchallenge.countdown.TimerManager
+import com.example.androiddevchallenge.countdown.TimerManagerImpl
 import com.example.androiddevchallenge.manager.DataManager
 import com.example.androiddevchallenge.manager.PreferenceManager
 import dagger.Module
@@ -37,8 +37,8 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideRepoRepository(): CountDownManager {
-        return CountDownManagerImpl()
+    fun provideTimerManager(): TimerManager {
+        return TimerManagerImpl()
     }
 
     @Singleton

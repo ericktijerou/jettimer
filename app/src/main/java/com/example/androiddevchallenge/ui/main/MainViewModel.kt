@@ -20,9 +20,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
-import com.example.androiddevchallenge.countdown.CountDownManager
+import com.example.androiddevchallenge.countdown.TimerManager
 import com.example.androiddevchallenge.manager.PreferenceManager
-import com.example.androiddevchallenge.util.ONE_HUNDRED_INT
+import com.example.androiddevchallenge.util.FIVE_HUNDRED
+import com.example.androiddevchallenge.util.ONE_THOUSAND_INT
 import com.example.androiddevchallenge.util.TimerState
 import com.example.androiddevchallenge.util.ZERO_LONG
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -33,7 +34,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val countDownManager: CountDownManager,
+    private val timerManager: TimerManager,
     private val preferenceManager: PreferenceManager
 ) :
     ViewModel() {
@@ -42,28 +43,45 @@ class MainViewModel @Inject constructor(
     private val _timerState = MutableLiveData<TimerState>()
     val timerState: LiveData<TimerState> = _timerState
 
-    private var job = SupervisorJob()
+    private var countDownJob = SupervisorJob()
+    private var visibilityJob = SupervisorJob()
 
     private val _tick = MutableLiveData<Long>()
     val tick = Transformations.switchMap(_tick) {
-        job = SupervisorJob()
-        liveData(Dispatchers.Main + job) {
-            countDownManager.start(it).collect { tickInSeconds ->
-                remainingTimeInMillis = tickInSeconds * ONE_HUNDRED_INT
+        countDownJob = SupervisorJob()
+        liveData(Dispatchers.Main + countDownJob) {
+            timerManager.startCountDown(it).collect { tickInSeconds ->
+                remainingTimeInMillis = tickInSeconds * ONE_THOUSAND_INT
                 if (tickInSeconds == ZERO_LONG) _timerState.value = TimerState.Stopped
                 emit(tickInSeconds)
             }
         }
     }
 
+    private val _timerVisibility = MutableLiveData<Boolean>()
+    val timerVisibility = Transformations.switchMap(_timerVisibility) {
+        visibilityJob = SupervisorJob()
+        liveData(Dispatchers.Main + visibilityJob) {
+            if (it) {
+                emit(true)
+            } else {
+                timerManager.startPausedTimer(FIVE_HUNDRED).collect { tickInSeconds ->
+                    emit(tickInSeconds)
+                }
+            }
+        }
+    }
+
     fun startTimer(millisUntilFinished: Long) {
-        job.cancel()
+        visibilityJob.cancel()
+        _timerVisibility.value = true
         _tick.value = millisUntilFinished
         _timerState.value = TimerState.Started
     }
 
     private fun pauseTimer() {
-        job.cancel()
+        countDownJob.cancel()
+        _timerVisibility.value = false
         _timerState.value = TimerState.Paused
     }
 
