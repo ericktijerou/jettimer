@@ -48,7 +48,7 @@ class MainViewModel @Inject constructor(
     private val _tick = MutableLiveData<Long>()
     val tick = Transformations.switchMap(_tick) {
         countDownJob = SupervisorJob()
-        liveData(Dispatchers.Main + countDownJob) {
+        liveData(Dispatchers.IO + countDownJob) {
             timerManager.startCountDown(it).collect { tickInMillis ->
                 remainingTimeInMillis = tickInMillis
                 emit(tickInMillis)
@@ -62,7 +62,7 @@ class MainViewModel @Inject constructor(
     private val _timerVisibility = MutableLiveData<Boolean>()
     val timerVisibility = Transformations.switchMap(_timerVisibility) {
         visibilityJob = SupervisorJob()
-        liveData(Dispatchers.Main + visibilityJob) {
+        liveData(Dispatchers.IO + visibilityJob) {
             if (it) {
                 emit(true)
             } else {

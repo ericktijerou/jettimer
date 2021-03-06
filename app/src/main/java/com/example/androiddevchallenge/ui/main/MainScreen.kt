@@ -128,9 +128,10 @@ fun MainScreenBody(
 ) {
     ConstraintLayout(modifier = modifier) {
         val (actionButtons, timer) = createRefs()
-        val progress = 1 - (tick.toFloat() / time.toFloat())
+        val progress = (tick.toFloat() / time.toFloat()).coerceAtLeast(0f)
+        val progressOffset = (1 - progress)
         val animatedProgress by animateFloatAsState(
-            targetValue = progress,
+            targetValue = progressOffset,
             animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec
         )
         MainTimer(
@@ -179,12 +180,7 @@ fun MainTimer(
 ) {
     Box(modifier = modifier, contentAlignment = Alignment.Center) {
         val progressVisibility = if (timerState == TimerState.Finished) timerVisibility else true
-        AnimatedVisibility(
-            visible = progressVisibility,
-            enter = fadeIn(initialAlpha = 0.6f),
-            exit = fadeOut(),
-            modifier = Modifier.fillMaxSize()
-        ) {
+        if (progressVisibility) {
             CircularProgressWithThumb(
                 progress = animatedProgress,
                 strokeWidth = 5.dp,
@@ -214,7 +210,8 @@ fun MainTimer(
                     )
                 )
             }
-            val labelTimerVisibility = if (timerState == TimerState.Paused) timerVisibility else true
+            val labelTimerVisibility =
+                if (timerState == TimerState.Paused) timerVisibility else true
             AnimatedVisibility(
                 visible = labelTimerVisibility,
                 enter = fadeIn(initialAlpha = 0.6f),
@@ -228,6 +225,11 @@ fun MainTimer(
                     )
                 }
             ) {
+                val color = if (timerState == TimerState.Finished) {
+                    JettimerTheme.colors.textPrimaryColor
+                } else {
+                    MaterialTheme.colors.secondaryVariant
+                }
                 val formattedTime = tick.toHhMmSs()
                 Text(
                     text = formattedTime,
@@ -236,7 +238,7 @@ fun MainTimer(
                         fontWeight = FontWeight.W400,
                         letterSpacing = 1.sp
                     ),
-                    color = MaterialTheme.colors.secondaryVariant,
+                    color = color,
                 )
             }
 
