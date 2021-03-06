@@ -54,10 +54,11 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.example.androiddevchallenge.R
-import com.example.androiddevchallenge.ui.component.CiruclarProgressWithThumb
+import com.example.androiddevchallenge.ui.component.CircularProgressWithThumb
 import com.example.androiddevchallenge.ui.theme.JettimerTheme
 import com.example.androiddevchallenge.util.ThemedPreview
 import com.example.androiddevchallenge.util.TimerState
+import com.example.androiddevchallenge.util.calculateFontSize
 import com.example.androiddevchallenge.util.isZero
 import com.example.androiddevchallenge.util.toHhMmSs
 import kotlinx.coroutines.delay
@@ -166,11 +167,22 @@ fun MainScreenBody(
 @Composable
 fun MainTimer(animatedProgress: Float, tick: Long, labelVisibility: Boolean, modifier: Modifier) {
     Box(modifier = modifier, contentAlignment = Alignment.Center) {
-        CiruclarProgressWithThumb(progress = animatedProgress, modifier.size(200.dp))
-        AnimatedVisibility(visible = labelVisibility, enter = fadeIn(initialAlpha = 0.5f), exit = fadeOut()) {
+        CircularProgressWithThumb(
+            progress = animatedProgress,
+            modifier.size(200.dp),
+            strokeWidth = 5.dp,
+            thumbSize = 7.dp
+        )
+        AnimatedVisibility(
+            visible = labelVisibility,
+            enter = fadeIn(initialAlpha = 0.6f),
+            exit = fadeOut()
+        ) {
+            val formattedTime = tick.toHhMmSs()
             Text(
-                text = tick.toHhMmSs(),
-                style = MaterialTheme.typography.h3.copy(
+                text = formattedTime,
+                style = MaterialTheme.typography.h2.copy(
+                    fontSize = formattedTime.calculateFontSize(),
                     fontWeight = FontWeight.W400,
                     letterSpacing = 1.sp
                 ),

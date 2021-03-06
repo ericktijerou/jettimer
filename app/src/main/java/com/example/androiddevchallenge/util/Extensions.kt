@@ -15,6 +15,8 @@
  */
 package com.example.androiddevchallenge.util
 
+import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.fastForEachIndexed
 import java.math.BigDecimal
 import java.util.concurrent.TimeUnit
@@ -59,4 +61,13 @@ fun Long.toHhMmSs(): String {
         formattedTime = formattedTime.removeExtraColon()
     }
     return formattedTime
+}
+
+fun String.calculateFontSize(): TextUnit {
+    return when (length) {
+        8 -> 40.sp
+        7 -> 48.sp
+        5 -> 64.sp
+        else -> 72.sp
+    }
 }

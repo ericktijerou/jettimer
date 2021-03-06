@@ -37,17 +37,18 @@ import kotlin.math.cos
 import kotlin.math.sin
 
 @Composable
-fun CiruclarProgressWithThumb(
+fun CircularProgressWithThumb(
     progress: Float,
     modifier: Modifier = Modifier,
     color: Color = MaterialTheme.colors.secondaryVariant,
     backgroundColor: Color = JettimerTheme.colors.textSecondaryColor,
-    strokeWidth: Dp = ProgressIndicatorDefaults.StrokeWidth
+    strokeWidth: Dp = ProgressIndicatorDefaults.StrokeWidth,
+    thumbSize: Dp? = null
 ) {
     val stroke = with(LocalDensity.current) {
         Stroke(width = strokeWidth.toPx(), cap = StrokeCap.Butt)
     }
-    val dotSizeInPx = stroke.width
+    val thumbSizeInPx = with(LocalDensity.current) { thumbSize?.toPx() } ?: stroke.width
     Canvas(
         modifier
             .progressSemantics(progress)
@@ -65,7 +66,7 @@ fun CiruclarProgressWithThumb(
             diameterOffset
         )
         drawArcIndicator(startAngle, sweep, color, stroke, diameterOffset)
-        drawThumb(dotSizeInPx, color, diameterOffset, sweep, startAngle)
+        drawThumb(thumbSizeInPx, color, diameterOffset, sweep, startAngle)
     }
 }
 
