@@ -19,4 +19,5 @@ sealed class TimerState {
     object Started : TimerState()
     object Stopped : TimerState()
     object Paused : TimerState()
+    object Finished : TimerState()
 }

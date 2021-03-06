@@ -46,16 +46,19 @@ fun Int.toStringOrEmpty(): String = if (this.isZero()) EMPTY else this.toString(
 fun Int.toFormattedString(): String =
     if (this in 0..9) "$ZERO_STRING$this" else this.toStringOrEmpty()
 
-fun Int.unitToString(hasHour: Boolean): String =
+fun Int.minuteToString(hasHour: Boolean): String =
     if (hasHour) this.toFormattedString() else this.toStringOrEmpty()
+
+fun Int.secondToString(hasMinute: Boolean): String =
+    if (hasMinute) this.toFormattedString() else this.toString()
 
 fun String.removeExtraColon(): String =
     if (this.first().toString() == COLON) takeLast(length - 1) else this
 
 fun Long.toHhMmSs(): String {
-    val hours = ((this / (60 * 60)) % 24).toInt().toStringOrEmpty()
-    val minutes = ((this / 60) % 60).toInt().unitToString(hours.isNotEmpty())
-    val seconds = (this % 60).toInt().unitToString(minutes.isNotEmpty())
+    val hours = ((this / (1000 * 60 * 60) % 24)).toInt().toStringOrEmpty()
+    val minutes = ((this / (1000 * 60) % 60)).toInt().minuteToString(hours.isNotEmpty())
+    val seconds = ((this / 1000) % 60).toInt().secondToString(minutes.isNotEmpty())
     var formattedTime = "$hours$COLON$minutes$COLON$seconds"
     while (formattedTime.isNotEmpty() && formattedTime.first().toString() == COLON) {
         formattedTime = formattedTime.removeExtraColon()

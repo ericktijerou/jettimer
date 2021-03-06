@@ -38,6 +38,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Pause
+import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material.icons.outlined.PlayArrow
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -79,8 +80,8 @@ fun MainScreen(
         return
     }
     val (isFinish, setFinish) = remember { mutableStateOf(false) }
-    val tick: Long by viewModel.tick.observeAsState(time / 1000)
-    val labelVisibility: Boolean by viewModel.timerVisibility.observeAsState(true)
+    val tick: Long by viewModel.tick.observeAsState(time)
+    val timerVisibility: Boolean by viewModel.timerVisibility.observeAsState(true)
     if (autoPlay) viewModel.startTimer(time)
     val timerState: TimerState by viewModel.timerState.observeAsState(TimerState.Stopped)
     BoxWithConstraints {
@@ -98,7 +99,7 @@ fun MainScreen(
                     .background(color = MaterialTheme.colors.primary)
                     .fillMaxSize(),
                 timerState = timerState,
-                labelVisibility = labelVisibility,
+                timerVisibility = timerVisibility,
                 onActionClick = { viewModel.onActionClick(timerState, time) },
                 onDelete = {
                     setFinish(true)
@@ -121,13 +122,13 @@ fun MainScreenBody(
     tick: Long,
     modifier: Modifier = Modifier,
     timerState: TimerState,
-    labelVisibility: Boolean,
+    timerVisibility: Boolean,
     onActionClick: () -> Unit,
     onDelete: () -> Unit
 ) {
     ConstraintLayout(modifier = modifier) {
         val (actionButtons, timer) = createRefs()
-        val progress = 1 - (tick.toFloat() * 1000 / time.toFloat())
+        val progress = 1 - (tick.toFloat() / time.toFloat())
         val animatedProgress by animateFloatAsState(
             targetValue = progress,
             animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec
@@ -135,7 +136,8 @@ fun MainScreenBody(
         MainTimer(
             animatedProgress = animatedProgress,
             tick = tick,
-            labelVisibility = labelVisibility,
+            timerState = timerState,
+            timerVisibility = timerVisibility,
             modifier = Modifier
                 .size(200.dp)
                 .constrainAs(timer) {
@@ -168,14 +170,29 @@ fun MainScreenBody(
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun MainTimer(animatedProgress: Float, tick: Long, labelVisibility: Boolean, modifier: Modifier) {
+fun MainTimer(
+    animatedProgress: Float,
+    tick: Long,
+    timerVisibility: Boolean,
+    timerState: TimerState,
+    modifier: Modifier
+) {
     Box(modifier = modifier, contentAlignment = Alignment.Center) {
-        CircularProgressWithThumb(
-            progress = animatedProgress,
-            modifier = Modifier.fillMaxSize(),
-            strokeWidth = 5.dp,
-            thumbSize = 7.dp
-        )
+        val progressVisibility = if (timerState == TimerState.Finished) timerVisibility else true
+        AnimatedVisibility(
+            visible = progressVisibility,
+            enter = fadeIn(initialAlpha = 0.6f),
+            exit = fadeOut(),
+            modifier = Modifier.fillMaxSize()
+        ) {
+            CircularProgressWithThumb(
+                progress = animatedProgress,
+                strokeWidth = 5.dp,
+                thumbSize = 7.dp,
+                modifier = Modifier.fillMaxSize()
+            )
+        }
+
         ConstraintLayout(
             modifier = Modifier.fillMaxSize()
         ) {
@@ -197,8 +214,9 @@ fun MainTimer(animatedProgress: Float, tick: Long, labelVisibility: Boolean, mod
                     )
                 )
             }
+            val labelTimerVisibility = if (timerState == TimerState.Paused) timerVisibility else true
             AnimatedVisibility(
-                visible = labelVisibility,
+                visible = labelTimerVisibility,
                 enter = fadeIn(initialAlpha = 0.6f),
                 exit = fadeOut(),
                 modifier = Modifier.constrainAs(timer) {
@@ -267,8 +285,11 @@ fun ActionButtons(
                     )
                 }
         ) {
-            val icon =
-                if (timerState == TimerState.Started) Icons.Filled.Pause else Icons.Outlined.PlayArrow
+            val icon = when (timerState) {
+                TimerState.Started -> Icons.Filled.Pause
+                TimerState.Paused, TimerState.Stopped -> Icons.Outlined.PlayArrow
+                TimerState.Finished -> Icons.Filled.Stop
+            }
             Icon(
                 imageVector = icon,
                 contentDescription = stringResource(R.string.label_start),
@@ -310,7 +331,6 @@ fun ActionButtons(
                 )
             )
         }
-
     }
 }
 
@@ -322,7 +342,7 @@ fun PreviewHomeScreenBody() {
             time = 36000,
             tick = 3000,
             timerState = TimerState.Started,
-            labelVisibility = true,
+            timerVisibility = true,
             onActionClick = {},
             onDelete = {}
         )
@@ -337,7 +357,7 @@ fun PreviewHomeScreenBodyDark() {
             time = 36000,
             tick = 3000,
             timerState = TimerState.Started,
-            labelVisibility = true,
+            timerVisibility = true,
             onActionClick = {},
             onDelete = {}
         )

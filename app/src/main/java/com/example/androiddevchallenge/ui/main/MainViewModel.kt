@@ -23,7 +23,6 @@ import androidx.lifecycle.liveData
 import com.example.androiddevchallenge.countdown.TimerManager
 import com.example.androiddevchallenge.manager.PreferenceManager
 import com.example.androiddevchallenge.util.FIVE_HUNDRED
-import com.example.androiddevchallenge.util.ONE_THOUSAND_INT
 import com.example.androiddevchallenge.util.TimerState
 import com.example.androiddevchallenge.util.ZERO_LONG
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -50,10 +49,12 @@ class MainViewModel @Inject constructor(
     val tick = Transformations.switchMap(_tick) {
         countDownJob = SupervisorJob()
         liveData(Dispatchers.Main + countDownJob) {
-            timerManager.startCountDown(it).collect { tickInSeconds ->
-                remainingTimeInMillis = tickInSeconds * ONE_THOUSAND_INT
-                if (tickInSeconds == ZERO_LONG) _timerState.value = TimerState.Stopped
-                emit(tickInSeconds)
+            timerManager.startCountDown(it).collect { tickInMillis ->
+                remainingTimeInMillis = tickInMillis
+                emit(tickInMillis)
+                if (tickInMillis == ZERO_LONG) {
+                    finishTimer()
+                }
             }
         }
     }
@@ -85,6 +86,12 @@ class MainViewModel @Inject constructor(
         countDownJob.cancel()
         _timerVisibility.value = false
         _timerState.value = TimerState.Paused
+    }
+
+    private fun finishTimer() {
+        visibilityJob.cancel()
+        _timerVisibility.value = false
+        _timerState.value = TimerState.Finished
     }
 
     fun getTimer() = preferenceManager.timeInMillis

@@ -15,10 +15,6 @@
  */
 package com.example.androiddevchallenge.countdown
 
-import android.os.CountDownTimer
-import com.example.androiddevchallenge.util.ONE_THOUSAND_FLOAT
-import com.example.androiddevchallenge.util.ONE_THOUSAND_LONG
-import com.example.androiddevchallenge.util.roundUp
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
@@ -28,18 +24,19 @@ import java.util.TimerTask
 @OptIn(ExperimentalCoroutinesApi::class)
 class TimerManagerImpl : TimerManager {
     override fun startCountDown(millisUntilFinished: Long) = callbackFlow<Long> {
-        val timer = object : CountDownTimer(millisUntilFinished, ONE_THOUSAND_LONG) {
-            override fun onFinish() {
-                offer(0L)
-                cancel()
-            }
-
-            override fun onTick(millisUntilFinished: Long) {
-                val remainingTimeInSeconds = (millisUntilFinished / ONE_THOUSAND_FLOAT).roundUp()
-                offer(remainingTimeInSeconds)
-            }
-        }
-        timer.start()
+        val delay = 1000L
+        val period = 1000L
+        val timer = Timer()
+        var interval = millisUntilFinished
+        timer.scheduleAtFixedRate(
+            object : TimerTask() {
+                override fun run() {
+                    interval -= period
+                    offer(interval)
+                }
+            },
+            delay, period
+        )
         awaitClose { timer.cancel() }
     }
 
