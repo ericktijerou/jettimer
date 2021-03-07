@@ -19,6 +19,7 @@ import android.content.Context
 import com.example.androiddevchallenge.countdown.TimerManager
 import com.example.androiddevchallenge.countdown.TimerManagerImpl
 import com.example.androiddevchallenge.manager.DataManager
+import com.example.androiddevchallenge.manager.BeepManager
 import com.example.androiddevchallenge.manager.PreferenceManager
 import dagger.Module
 import dagger.Provides
@@ -39,6 +40,12 @@ object AppModule {
     @Provides
     fun provideTimerManager(): TimerManager {
         return TimerManagerImpl()
+    }
+
+    @Singleton
+    @Provides
+    fun provideBeepManager(@ApplicationContext context: Context): BeepManager {
+        return BeepManager(context)
     }
 
     @Singleton

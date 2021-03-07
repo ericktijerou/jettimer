@@ -165,7 +165,7 @@ fun MainScreenBody(
             timerState = timerState,
             modifier = Modifier
                 .constrainAs(actionButtons) {
-                    bottom.linkTo(parent.bottom, margin = 64.dp)
+                    bottom.linkTo(parent.bottom, margin = 16.dp)
                     linkTo(
                         start = parent.start,
                         end = parent.end

@@ -135,7 +135,7 @@ fun AddScreenBody(
         }
         StartButton(
             visible = textState.isNotEmpty(),
-            modifier = Modifier.fillMaxSize().padding(bottom = 64.dp)
+            modifier = Modifier.fillMaxSize().padding(bottom = 16.dp)
         ) { navigateToMain(textState.toMillis()) }
     }
 }
@@ -217,7 +217,7 @@ fun DialItem(value: String, onItemClick: (String) -> Unit) {
         contentAlignment = Alignment.Center,
         modifier = Modifier
             .width(120.dp)
-            .height(65.dp)
+            .height(85.dp)
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = rememberRipple(bounded = false, radius = 60.dp),

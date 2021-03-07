@@ -21,6 +21,7 @@ import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
 import com.example.androiddevchallenge.countdown.TimerManager
+import com.example.androiddevchallenge.manager.BeepManager
 import com.example.androiddevchallenge.manager.PreferenceManager
 import com.example.androiddevchallenge.util.TimerState
 import com.example.androiddevchallenge.util.ZERO_LONG
@@ -36,7 +37,8 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val timerManager: TimerManager,
-    private val preferenceManager: PreferenceManager
+    private val preferenceManager: PreferenceManager,
+    private val beepManager: BeepManager
 ) :
     ViewModel() {
 
@@ -112,10 +114,13 @@ class MainViewModel @Inject constructor(
         ui {
             _timerVisibility.value = false
             _timerState.value = TimerState.Finished
+            beepManager.vibrateWave()
+            beepManager.playDefaultNotificationSound()
         }
     }
 
     private fun reset() {
+        beepManager.stopNotificationSound()
         visibilityJob.cancel()
         countDownJob.cancel()
         preferenceManager.tempTimeInMillis = ZERO_LONG
@@ -134,6 +139,9 @@ class MainViewModel @Inject constructor(
     fun getTempTimer() = preferenceManager.tempTimeInMillis.coerceAtLeast(getTimer())
 
     fun clearTimer() {
+        visibilityJob.cancel()
+        countDownJob.cancel()
+        beepManager.stopNotificationSound()
         preferenceManager.tempTimeInMillis = ZERO_LONG
         preferenceManager.timeInMillis = ZERO_LONG
     }
