@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.fastForEachIndexed
 import java.math.BigDecimal
 import java.util.concurrent.TimeUnit
+import kotlin.math.absoluteValue
 
 fun String.fillWithZeros() = this.padStart(MAX_LENGTH_TIMER, ZERO_STRING.first())
 fun String.removeLast() = if (isNotEmpty()) this.take(this.length - 1) else this
@@ -45,7 +46,7 @@ fun Float.roundUp(): Long = this.toBigDecimal().setScale(0, BigDecimal.ROUND_UP)
 
 fun Int.toStringOrEmpty(): String = if (this.isZero()) EMPTY else this.toString()
 fun Int.toFormattedString(): String =
-    if (this in 0..9) "$ZERO_STRING$this" else this.toStringOrEmpty()
+    if (this in 9 downTo -9) "$ZERO_STRING${this.absoluteValue}" else this.toStringOrEmpty()
 
 fun Int.minuteToString(hasHour: Boolean): String =
     if (hasHour) this.toFormattedString() else this.toStringOrEmpty()
