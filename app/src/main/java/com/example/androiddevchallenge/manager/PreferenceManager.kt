@@ -24,6 +24,7 @@ class PreferenceManager @Inject constructor(context: Context) {
     companion object {
         private const val PREF_PACKAGE_NAME = "com.ericktijerou.jettimer.preferences"
         private const val PREF_KEY_TIMER = "timer"
+        private const val PREF_KEY_TEMP_TIMER = "temp_timer"
     }
 
     private val pref: SharedPreferences =
@@ -32,4 +33,8 @@ class PreferenceManager @Inject constructor(context: Context) {
     var timeInMillis: Long
         get() = pref.getLong(PREF_KEY_TIMER, 0)
         set(timer) = pref.edit().putLong(PREF_KEY_TIMER, timer).apply()
+
+    var tempTimeInMillis: Long
+        get() = pref.getLong(PREF_KEY_TEMP_TIMER, 0)
+        set(temp) = pref.edit().putLong(PREF_KEY_TEMP_TIMER, temp).apply()
 }

@@ -24,8 +24,8 @@ import java.util.TimerTask
 @OptIn(ExperimentalCoroutinesApi::class)
 class TimerManagerImpl : TimerManager {
     override fun startCountDown(millisUntilFinished: Long) = callbackFlow<Long> {
-        val delay = 1000L
-        val period = 1000L
+        val delay = 0L
+        val period = 100L
         val timer = Timer()
         var interval = millisUntilFinished
         timer.scheduleAtFixedRate(

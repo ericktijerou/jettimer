@@ -59,6 +59,7 @@ import androidx.constraintlayout.compose.Dimension
 import com.example.androiddevchallenge.R
 import com.example.androiddevchallenge.ui.component.CircularProgressWithThumb
 import com.example.androiddevchallenge.ui.theme.JettimerTheme
+import com.example.androiddevchallenge.util.EMPTY
 import com.example.androiddevchallenge.util.ThemedPreview
 import com.example.androiddevchallenge.util.TimerState
 import com.example.androiddevchallenge.util.calculateFontSize
@@ -80,9 +81,10 @@ fun MainScreen(
         return
     }
     val (isFinish, setFinish) = remember { mutableStateOf(false) }
-    val tick: Long by viewModel.tick.observeAsState(time)
+    val tick: Long by viewModel.tick.observeAsState(viewModel.getTempTimer())
+    val timerLabel: String by viewModel.timerLabel.observeAsState(viewModel.getTempTimer().toHhMmSs())
     val timerVisibility: Boolean by viewModel.timerVisibility.observeAsState(true)
-    if (autoPlay) viewModel.startTimer(time)
+    if (autoPlay) viewModel.startTimer()
     val timerState: TimerState by viewModel.timerState.observeAsState(TimerState.Stopped)
     BoxWithConstraints {
         val offsetY = with(LocalDensity.current) { maxHeight.toPx().toInt() / 2 }
@@ -93,14 +95,15 @@ fun MainScreen(
             initiallyVisible = false
         ) {
             MainScreenBody(
-                time = time,
+                time = viewModel.getTempTimer(),
                 tick = tick,
+                timerLabel = timerLabel,
                 modifier = modifier
                     .background(color = MaterialTheme.colors.primary)
                     .fillMaxSize(),
                 timerState = timerState,
                 timerVisibility = timerVisibility,
-                onActionClick = { viewModel.onActionClick(timerState, time) },
+                onActionClick = { viewModel.onActionClick(timerState) },
                 onDelete = {
                     setFinish(true)
                 },
@@ -121,6 +124,7 @@ fun MainScreen(
 fun MainScreenBody(
     time: Long,
     tick: Long,
+    timerLabel: String,
     modifier: Modifier = Modifier,
     timerState: TimerState,
     timerVisibility: Boolean,
@@ -138,7 +142,7 @@ fun MainScreenBody(
         )
         MainTimer(
             animatedProgress = animatedProgress,
-            tick = tick,
+            formattedTime = timerLabel,
             timerState = timerState,
             timerVisibility = timerVisibility,
             modifier = Modifier
@@ -176,10 +180,10 @@ fun MainScreenBody(
 @Composable
 fun MainTimer(
     animatedProgress: Float,
-    tick: Long,
     timerVisibility: Boolean,
     timerState: TimerState,
     modifier: Modifier,
+    formattedTime: String,
     onOptionTimerClick: () -> Unit
 ) {
     Box(modifier = modifier, contentAlignment = Alignment.Center) {
@@ -234,7 +238,6 @@ fun MainTimer(
                 } else {
                     MaterialTheme.colors.secondaryVariant
                 }
-                val formattedTime = tick.toHhMmSs()
                 Text(
                     text = formattedTime,
                     style = MaterialTheme.typography.h2.copy(
@@ -355,7 +358,8 @@ fun PreviewHomeScreenBody() {
             timerVisibility = true,
             onActionClick = {},
             onDelete = {},
-            onOptionTimerClick = {}
+            onOptionTimerClick = {},
+            timerLabel = EMPTY
         )
     }
 }
@@ -371,7 +375,8 @@ fun PreviewHomeScreenBodyDark() {
             timerVisibility = true,
             onActionClick = {},
             onDelete = {},
-            onOptionTimerClick = {}
+            onOptionTimerClick = {},
+            timerLabel = EMPTY
         )
     }
 }

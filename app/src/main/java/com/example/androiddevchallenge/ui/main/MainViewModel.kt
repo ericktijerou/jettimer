@@ -26,7 +26,9 @@ import com.example.androiddevchallenge.manager.PreferenceManager
 import com.example.androiddevchallenge.util.FIVE_HUNDRED
 import com.example.androiddevchallenge.util.TimerState
 import com.example.androiddevchallenge.util.ZERO_LONG
+import com.example.androiddevchallenge.util.getPositiveValue
 import com.example.androiddevchallenge.util.launchInIO
+import com.example.androiddevchallenge.util.toHhMmSs
 import com.example.androiddevchallenge.util.ui
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -40,6 +42,9 @@ class MainViewModel @Inject constructor(
     private val preferenceManager: PreferenceManager
 ) :
     ViewModel() {
+
+    private val _timerLabel = MutableLiveData<String>()
+    val timerLabel: LiveData<String> = _timerLabel
 
     private var remainingTimeInMillis = ZERO_LONG
     private val _timerState = MutableLiveData<TimerState>()
@@ -58,6 +63,7 @@ class MainViewModel @Inject constructor(
                 timerManager.startCountDown(it).collect { tickInMillis ->
                     remainingTimeInMillis = tickInMillis
                     emit(tickInMillis)
+                    ui { if (tickInMillis % 1000 == 0) _timerLabel.value = tickInMillis.toHhMmSs() }
                     if (tickInMillis == ZERO_LONG) {
                         finishTimer()
                     }
@@ -80,13 +86,26 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun startTimer(millisUntilFinished: Long) {
+    private fun resumeTimer(millisUntilFinished: Long) {
+        viewModelScope.launchInIO {
+            visibilityJob.cancel()
+            countDownJob.cancel()
+            ui {
+                _timerLabel.value = millisUntilFinished.toHhMmSs()
+                _timerVisibility.value = true
+                _tick.value = millisUntilFinished
+                _timerState.value = TimerState.Started
+            }
+        }
+    }
+
+    fun startTimer() {
         viewModelScope.launchInIO {
             visibilityJob.cancel()
             countDownJob.cancel()
             ui {
                 _timerVisibility.value = true
-                _tick.value = millisUntilFinished
+                _tick.value = getTempTimer()
                 _timerState.value = TimerState.Started
             }
         }
@@ -113,11 +132,13 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun reset() {
+    private fun reset() {
         viewModelScope.launchInIO {
             visibilityJob.cancel()
             countDownJob.cancel()
+            preferenceManager.tempTimeInMillis = ZERO_LONG
             ui {
+                _timerLabel.value = getTimer().toHhMmSs()
                 _timerVisibility.value = true
                 _tick.value = Long.MIN_VALUE
                 _timerState.value = TimerState.Stopped
@@ -127,22 +148,37 @@ class MainViewModel @Inject constructor(
 
     fun getTimer() = preferenceManager.timeInMillis
 
+    private fun setTempTimer(value: Long) {
+        preferenceManager.tempTimeInMillis = value
+    }
+
+    fun getTempTimer() = preferenceManager.tempTimeInMillis.coerceAtLeast(getTimer())
+
     fun clearTimer() {
+        preferenceManager.tempTimeInMillis = ZERO_LONG
         preferenceManager.timeInMillis = ZERO_LONG
     }
 
-    fun onActionClick(currentState: TimerState, time: Long) {
+    fun onActionClick(currentState: TimerState) {
         when (currentState) {
             TimerState.Started -> pauseTimer()
-            TimerState.Stopped -> startTimer(time)
-            TimerState.Paused -> startTimer(remainingTimeInMillis)
+            TimerState.Stopped -> startTimer()
+            TimerState.Paused -> resumeTimer(remainingTimeInMillis)
             TimerState.Finished -> reset()
         }
     }
 
+    private fun getElapsedTime(currentTime: Long): Long {
+        return if (remainingTimeInMillis > 0) currentTime - remainingTimeInMillis else ZERO_LONG
+    }
+
     fun onOptionTimerClick(currentState: TimerState) {
         when (currentState) {
-            TimerState.Started, TimerState.Finished -> {}
+            TimerState.Started, TimerState.Finished -> {
+                val currentTime = getTempTimer()
+                setTempTimer(tick.value.getPositiveValue() + 60000 + getElapsedTime(currentTime = currentTime))
+                resumeTimer(getTempTimer() - getElapsedTime(currentTime = currentTime))
+            }
             TimerState.Stopped, TimerState.Paused -> reset()
         }
     }

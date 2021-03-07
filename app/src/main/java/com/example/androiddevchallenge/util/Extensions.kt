@@ -25,6 +25,7 @@ fun String.fillWithZeros() = this.padStart(MAX_LENGTH_TIMER, ZERO_STRING.first()
 fun String.removeLast() = if (isNotEmpty()) this.take(this.length - 1) else this
 fun String.firstInputIsZero(input: String) = this.isEmpty() && input == ZERO_STRING
 fun Long.isNotZero(): Boolean = this != ZERO_LONG
+fun Long?.getPositiveValue(): Long = this?.let { if (this < 0) ZERO_LONG else this } ?: ZERO_LONG
 fun Long.isZero(): Boolean = this == ZERO_LONG
 fun Int.isZero(): Boolean = this == ZERO_INT
 
