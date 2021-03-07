@@ -20,14 +20,12 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
-import androidx.lifecycle.viewModelScope
 import com.example.androiddevchallenge.countdown.TimerManager
 import com.example.androiddevchallenge.manager.PreferenceManager
 import com.example.androiddevchallenge.util.FIVE_HUNDRED
 import com.example.androiddevchallenge.util.TimerState
 import com.example.androiddevchallenge.util.ZERO_LONG
 import com.example.androiddevchallenge.util.getPositiveValue
-import com.example.androiddevchallenge.util.launchInIO
 import com.example.androiddevchallenge.util.toHhMmSs
 import com.example.androiddevchallenge.util.ui
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -87,63 +85,45 @@ class MainViewModel @Inject constructor(
     }
 
     private fun resumeTimer(millisUntilFinished: Long) {
-        viewModelScope.launchInIO {
-            visibilityJob.cancel()
-            countDownJob.cancel()
-            ui {
-                _timerLabel.value = millisUntilFinished.toHhMmSs()
-                _timerVisibility.value = true
-                _tick.value = millisUntilFinished
-                _timerState.value = TimerState.Started
-            }
-        }
+        visibilityJob.cancel()
+        countDownJob.cancel()
+        _timerLabel.value = millisUntilFinished.toHhMmSs()
+        _timerVisibility.value = true
+        _tick.value = millisUntilFinished
+        _timerState.value = TimerState.Started
     }
 
     fun startTimer() {
-        viewModelScope.launchInIO {
-            visibilityJob.cancel()
-            countDownJob.cancel()
-            ui {
-                _timerVisibility.value = true
-                _tick.value = getTempTimer()
-                _timerState.value = TimerState.Started
-            }
-        }
+        visibilityJob.cancel()
+        countDownJob.cancel()
+        _timerVisibility.value = true
+        _tick.value = getTempTimer()
+        _timerState.value = TimerState.Started
     }
 
     private fun pauseTimer() {
-        viewModelScope.launchInIO {
-            visibilityJob.cancel()
-            countDownJob.cancel()
-            ui {
-                _timerVisibility.value = false
-                _timerState.value = TimerState.Paused
-            }
-        }
+        visibilityJob.cancel()
+        countDownJob.cancel()
+        _timerVisibility.value = false
+        _timerState.value = TimerState.Paused
     }
 
-    private fun finishTimer() {
-        viewModelScope.launchInIO {
-            visibilityJob.cancel()
-            ui {
-                _timerVisibility.value = false
-                _timerState.value = TimerState.Finished
-            }
+    private suspend fun finishTimer() {
+        visibilityJob.cancel()
+        ui {
+            _timerVisibility.value = false
+            _timerState.value = TimerState.Finished
         }
     }
 
     private fun reset() {
-        viewModelScope.launchInIO {
-            visibilityJob.cancel()
-            countDownJob.cancel()
-            preferenceManager.tempTimeInMillis = ZERO_LONG
-            ui {
-                _timerLabel.value = getTimer().toHhMmSs()
-                _timerVisibility.value = true
-                _tick.value = Long.MIN_VALUE
-                _timerState.value = TimerState.Stopped
-            }
-        }
+        visibilityJob.cancel()
+        countDownJob.cancel()
+        preferenceManager.tempTimeInMillis = ZERO_LONG
+        _timerLabel.value = getTimer().toHhMmSs()
+        _timerVisibility.value = true
+        _tick.value = Long.MIN_VALUE
+        _timerState.value = TimerState.Stopped
     }
 
     fun getTimer() = preferenceManager.timeInMillis
