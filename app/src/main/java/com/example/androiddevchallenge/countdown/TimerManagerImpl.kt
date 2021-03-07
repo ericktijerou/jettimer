@@ -15,6 +15,7 @@
  */
 package com.example.androiddevchallenge.countdown
 
+import com.example.androiddevchallenge.util.FIVE_HUNDRED
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
@@ -40,7 +41,7 @@ class TimerManagerImpl : TimerManager {
         awaitClose { timer.cancel() }
     }
 
-    override fun startPausedTimer(period: Long) = callbackFlow<Boolean> {
+    override fun startIntermittentTimer() = callbackFlow<Boolean> {
         val timer = Timer()
         var time = true
         timer.scheduleAtFixedRate(
@@ -51,7 +52,7 @@ class TimerManagerImpl : TimerManager {
                 }
             },
             0,
-            period
+            FIVE_HUNDRED
         )
         awaitClose { timer.cancel() }
     }

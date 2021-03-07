@@ -22,7 +22,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
 import com.example.androiddevchallenge.countdown.TimerManager
 import com.example.androiddevchallenge.manager.PreferenceManager
-import com.example.androiddevchallenge.util.FIVE_HUNDRED
 import com.example.androiddevchallenge.util.TimerState
 import com.example.androiddevchallenge.util.ZERO_LONG
 import com.example.androiddevchallenge.util.getPositiveValue
@@ -77,7 +76,7 @@ class MainViewModel @Inject constructor(
             if (it) {
                 emit(true)
             } else {
-                timerManager.startPausedTimer(FIVE_HUNDRED).collect { tickInSeconds ->
+                timerManager.startIntermittentTimer().collect { tickInSeconds ->
                     emit(tickInSeconds)
                 }
             }

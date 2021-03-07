@@ -21,5 +21,5 @@ import javax.inject.Singleton
 @Singleton
 interface TimerManager {
     fun startCountDown(millisUntilFinished: Long): Flow<Long>
-    fun startPausedTimer(period: Long): Flow<Boolean>
+    fun startIntermittentTimer(): Flow<Boolean>
 }
