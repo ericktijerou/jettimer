@@ -31,13 +31,15 @@ The codebase focuses on following key things:
 - [Coroutines](https://kotlinlang.org/docs/reference/coroutines-overview.html) - For asynchronous and more..
 - [Android Architecture Components](https://developer.android.com/topic/libraries/architecture) - Collection of libraries that help you design robust, testable, and maintainable apps.
   - [ViewModel](https://developer.android.com/topic/libraries/architecture/viewmodel) - Stores UI-related data that isn't destroyed on UI changes.
+  - [LiveData](https://developer.android.com/topic/libraries/architecture/livedata) - LiveData is an observable data holder class. Unlike a regular observable, LiveData is lifecycle-aware.
 - [Navigation Component](https://developer.android.com/guide/navigation/navigation-getting-started) Navigation refers to the interactions that allow users to navigate across, into, and back out from the different pieces of content within your app.
 - [Dependency Injection](https://developer.android.com/training/dependency-injection) -
   - [Hilt-Dagger](https://dagger.dev/hilt/) - Standard library to incorporate Dagger dependency injection into an Android application.
   - [Hilt-ViewModel](https://developer.android.com/training/dependency-injection/hilt-jetpack) - DI for injecting `ViewModel`.
 - [Jetpack Compose UI Toolkit](https://developer.android.com/jetpack/compose) - Modern UI development toolkit.
-- [Lottie Compose](https://github.com/airbnb/lottie/blob/master/android-compose.md) - Render After Effects animations natively on Android and iOS, Web, and React Native.
+- [Accompanist](https://chrisbanes.github.io/accompanist/) - A collection of extension libraries for Jetpack Compose.
 - [Spotless](https://github.com/diffplug/spotless) - Keep your code spotless.
+- [EventBus](https://greenrobot.org/eventbus/) - EventBus is an open-source library for Android and Java using the publisher/subscriber pattern for loose coupling.
 
 ## License
 ```
