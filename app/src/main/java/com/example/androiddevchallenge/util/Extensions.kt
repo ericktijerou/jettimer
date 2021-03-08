@@ -15,9 +15,16 @@
  */
 package com.example.androiddevchallenge.util
 
+import android.annotation.SuppressLint
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
+import android.os.Build
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.fastForEachIndexed
+import com.example.androiddevchallenge.MainActivity
+import com.example.androiddevchallenge.manager.PreferenceManager
 import java.math.BigDecimal
 import java.util.concurrent.TimeUnit
 import kotlin.math.absoluteValue
@@ -75,4 +82,16 @@ fun String.calculateFontSize(): TextUnit {
         5 -> 64.sp
         else -> 72.sp
     }
+}
+
+val Context.preferences: PreferenceManager get() = PreferenceManager(this)
+
+fun isOreoPlus() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
+fun Context.getLaunchIntent() =
+    packageManager.getLaunchIntentForPackage("com.ericktijerou.jettimer")
+
+@SuppressLint("UnspecifiedImmutableFlag")
+fun Context.getOpenTimerTabIntent(): PendingIntent {
+    val intent = getLaunchIntent() ?: Intent(this, MainActivity::class.java)
+    return PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
 }

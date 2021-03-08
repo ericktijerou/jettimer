@@ -1,3 +1,18 @@
+/*
+ * Copyright 2021 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.example.androiddevchallenge.manager
 
 import android.app.Service
@@ -8,7 +23,6 @@ import android.os.VibrationEffect
 import android.os.Vibrator
 import com.example.androiddevchallenge.R
 import javax.inject.Inject
-
 
 class BeepManager @Inject constructor(val context: Context) {
 
@@ -30,7 +44,6 @@ class BeepManager @Inject constructor(val context: Context) {
 
     private fun newPlayer(): MediaPlayer {
         return MediaPlayer.create(context, R.raw.beep_alarm)
-
     }
 
     fun playDefaultNotificationSound() {
@@ -60,7 +73,6 @@ class BeepManager @Inject constructor(val context: Context) {
             vibrator?.vibrate(pattern, if (isRepeat) 1 else -1)
         }
     }
-
 
     companion object {
         private const val VIBRATE_DURATION = 100L

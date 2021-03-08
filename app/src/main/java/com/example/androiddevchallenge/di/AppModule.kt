@@ -16,10 +16,10 @@
 package com.example.androiddevchallenge.di
 
 import android.content.Context
-import com.example.androiddevchallenge.countdown.TimerManager
-import com.example.androiddevchallenge.countdown.TimerManagerImpl
-import com.example.androiddevchallenge.manager.DataManager
+import com.example.androiddevchallenge.countdown.IntermittentTimerManager
+import com.example.androiddevchallenge.countdown.IntermittentTimerManagerImpl
 import com.example.androiddevchallenge.manager.BeepManager
+import com.example.androiddevchallenge.manager.DataManager
 import com.example.androiddevchallenge.manager.PreferenceManager
 import dagger.Module
 import dagger.Provides
@@ -38,8 +38,8 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideTimerManager(): TimerManager {
-        return TimerManagerImpl()
+    fun provideTimerManager(): IntermittentTimerManager {
+        return IntermittentTimerManagerImpl()
     }
 
     @Singleton

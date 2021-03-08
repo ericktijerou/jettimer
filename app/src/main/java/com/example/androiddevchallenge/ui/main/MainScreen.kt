@@ -61,7 +61,7 @@ import com.example.androiddevchallenge.ui.component.CircularProgressWithThumb
 import com.example.androiddevchallenge.ui.theme.JettimerTheme
 import com.example.androiddevchallenge.util.EMPTY
 import com.example.androiddevchallenge.util.ThemedPreview
-import com.example.androiddevchallenge.util.TimerState
+import com.example.androiddevchallenge.util.TimerScreenState
 import com.example.androiddevchallenge.util.calculateFontSize
 import com.example.androiddevchallenge.util.isZero
 import com.example.androiddevchallenge.util.toHhMmSs
@@ -85,7 +85,7 @@ fun MainScreen(
     val timerLabel: String by viewModel.timerLabel.observeAsState(viewModel.getTempTimer().toHhMmSs())
     val timerVisibility: Boolean by viewModel.timerVisibility.observeAsState(true)
     if (autoPlay) viewModel.startTimer()
-    val timerState: TimerState by viewModel.timerState.observeAsState(TimerState.Stopped)
+    val timerScreenState: TimerScreenState by viewModel.timerScreenState.observeAsState(TimerScreenState.Stopped)
     BoxWithConstraints {
         val offsetY = with(LocalDensity.current) { maxHeight.toPx().toInt() / 2 }
         AnimatedVisibility(
@@ -101,13 +101,13 @@ fun MainScreen(
                 modifier = modifier
                     .background(color = MaterialTheme.colors.primary)
                     .fillMaxSize(),
-                timerState = timerState,
+                timerScreenState = timerScreenState,
                 timerVisibility = timerVisibility,
-                onActionClick = { viewModel.onActionClick(timerState) },
+                onActionClick = { viewModel.onActionClick(timerScreenState) },
                 onDelete = {
                     setFinish(true)
                 },
-                onOptionTimerClick = { viewModel.onOptionTimerClick(timerState) }
+                onOptionTimerClick = { viewModel.onOptionTimerClick(timerScreenState) }
             )
         }
     }
@@ -126,7 +126,7 @@ fun MainScreenBody(
     tick: Long,
     timerLabel: String,
     modifier: Modifier = Modifier,
-    timerState: TimerState,
+    timerScreenState: TimerScreenState,
     timerVisibility: Boolean,
     onActionClick: () -> Unit,
     onDelete: () -> Unit,
@@ -143,7 +143,7 @@ fun MainScreenBody(
         MainTimer(
             animatedProgress = animatedProgress,
             formattedTime = timerLabel,
-            timerState = timerState,
+            timerScreenState = timerScreenState,
             timerVisibility = timerVisibility,
             modifier = Modifier
                 .size(200.dp)
@@ -162,7 +162,7 @@ fun MainScreenBody(
         ActionButtons(
             onActionClick = onActionClick,
             onDelete = onDelete,
-            timerState = timerState,
+            timerScreenState = timerScreenState,
             modifier = Modifier
                 .constrainAs(actionButtons) {
                     bottom.linkTo(parent.bottom, margin = 16.dp)
@@ -181,13 +181,13 @@ fun MainScreenBody(
 fun MainTimer(
     animatedProgress: Float,
     timerVisibility: Boolean,
-    timerState: TimerState,
+    timerScreenState: TimerScreenState,
     modifier: Modifier,
     formattedTime: String,
     onOptionTimerClick: () -> Unit
 ) {
     Box(modifier = modifier, contentAlignment = Alignment.Center) {
-        val progressVisibility = if (timerState == TimerState.Finished) timerVisibility else true
+        val progressVisibility = if (timerScreenState == TimerScreenState.Finished) timerVisibility else true
         if (progressVisibility) {
             CircularProgressWithThumb(
                 progress = animatedProgress,
@@ -219,7 +219,7 @@ fun MainTimer(
                 )
             }
             val labelTimerVisibility =
-                if (timerState == TimerState.Paused) timerVisibility else true
+                if (timerScreenState == TimerScreenState.Paused) timerVisibility else true
             AnimatedVisibility(
                 visible = labelTimerVisibility,
                 enter = fadeIn(initialAlpha = 0.6f),
@@ -233,7 +233,7 @@ fun MainTimer(
                     )
                 }
             ) {
-                val color = if (timerState == TimerState.Finished) {
+                val color = if (timerScreenState == TimerScreenState.Finished) {
                     JettimerTheme.colors.textPrimaryColor
                 } else {
                     MaterialTheme.colors.secondaryVariant
@@ -257,9 +257,9 @@ fun MainTimer(
                     bottom.linkTo(parent.bottom, margin = 20.dp)
                 }
             ) {
-                val resId = when (timerState) {
-                    TimerState.Started, TimerState.Finished -> R.string.label_plus_one_minute
-                    TimerState.Stopped, TimerState.Paused -> R.string.label_reset
+                val resId = when (timerScreenState) {
+                    TimerScreenState.Started, TimerScreenState.Finished -> R.string.label_plus_one_minute
+                    TimerScreenState.Stopped, TimerScreenState.Paused -> R.string.label_reset
                 }
                 Text(
                     text = stringResource(resId),
@@ -277,7 +277,7 @@ fun MainTimer(
 @Composable
 fun ActionButtons(
     modifier: Modifier,
-    timerState: TimerState,
+    timerScreenState: TimerScreenState,
     onActionClick: () -> Unit,
     onDelete: () -> Unit
 ) {
@@ -298,10 +298,10 @@ fun ActionButtons(
                     )
                 }
         ) {
-            val icon = when (timerState) {
-                TimerState.Started -> Icons.Outlined.Pause
-                TimerState.Paused, TimerState.Stopped -> Icons.Outlined.PlayArrow
-                TimerState.Finished -> Icons.Outlined.Stop
+            val icon = when (timerScreenState) {
+                TimerScreenState.Started -> Icons.Outlined.Pause
+                TimerScreenState.Paused, TimerScreenState.Stopped -> Icons.Outlined.PlayArrow
+                TimerScreenState.Finished -> Icons.Outlined.Stop
             }
             Icon(
                 imageVector = icon,
@@ -354,7 +354,7 @@ fun PreviewHomeScreenBody() {
         MainScreenBody(
             time = 36000,
             tick = 3000,
-            timerState = TimerState.Started,
+            timerScreenState = TimerScreenState.Started,
             timerVisibility = true,
             onActionClick = {},
             onDelete = {},
@@ -371,7 +371,7 @@ fun PreviewHomeScreenBodyDark() {
         MainScreenBody(
             time = 36000,
             tick = 3000,
-            timerState = TimerState.Started,
+            timerScreenState = TimerScreenState.Started,
             timerVisibility = true,
             onActionClick = {},
             onDelete = {},

@@ -20,56 +20,51 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
-import com.example.androiddevchallenge.countdown.TimerManager
+import com.example.androiddevchallenge.countdown.IntermittentTimerManager
 import com.example.androiddevchallenge.manager.BeepManager
 import com.example.androiddevchallenge.manager.PreferenceManager
+import com.example.androiddevchallenge.util.TimerScreenState
 import com.example.androiddevchallenge.util.TimerState
 import com.example.androiddevchallenge.util.ZERO_LONG
 import com.example.androiddevchallenge.util.getPositiveValue
 import com.example.androiddevchallenge.util.toHhMmSs
-import com.example.androiddevchallenge.util.ui
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.collect
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val timerManager: TimerManager,
+    private val intermittentTimerManager: IntermittentTimerManager,
     private val preferenceManager: PreferenceManager,
     private val beepManager: BeepManager
 ) :
     ViewModel() {
 
+    init {
+        EventBus.getDefault().register(this)
+    }
+
+    override fun onCleared() {
+        EventBus.getDefault().unregister(this)
+        super.onCleared()
+    }
+
     private val _timerLabel = MutableLiveData<String>()
     val timerLabel: LiveData<String> = _timerLabel
 
     private var remainingTimeInMillis = ZERO_LONG
-    private val _timerState = MutableLiveData<TimerState>()
-    val timerState: LiveData<TimerState> = _timerState
+    private val _timerState = MutableLiveData<TimerScreenState>()
+    val timerScreenState: LiveData<TimerScreenState> = _timerState
 
-    private var countDownJob = SupervisorJob()
     private var visibilityJob = SupervisorJob()
 
     private val _tick = MutableLiveData<Long>()
-    val tick = Transformations.switchMap(_tick) {
-        countDownJob = SupervisorJob()
-        liveData(Dispatchers.IO + countDownJob) {
-            if (it == Long.MIN_VALUE) {
-                emit(getTimer())
-            } else {
-                timerManager.startCountDown(it).collect { tickInMillis ->
-                    remainingTimeInMillis = tickInMillis
-                    emit(tickInMillis)
-                    ui { if (tickInMillis % 1000 == 0) _timerLabel.value = tickInMillis.toHhMmSs() }
-                    if (tickInMillis == ZERO_LONG) {
-                        finishTimer()
-                    }
-                }
-            }
-        }
-    }
+    val tick: LiveData<Long> = _tick
 
     private val _timerVisibility = MutableLiveData<Boolean>()
     val timerVisibility = Transformations.switchMap(_timerVisibility) {
@@ -78,7 +73,7 @@ class MainViewModel @Inject constructor(
             if (it) {
                 emit(true)
             } else {
-                timerManager.startIntermittentTimer().collect { tickInSeconds ->
+                intermittentTimerManager.startIntermittentTimer().collect { tickInSeconds ->
                     emit(tickInSeconds)
                 }
             }
@@ -87,47 +82,38 @@ class MainViewModel @Inject constructor(
 
     private fun resumeTimer(millisUntilFinished: Long) {
         visibilityJob.cancel()
-        countDownJob.cancel()
+        EventBus.getDefault().post(TimerState.Finished)
         _timerLabel.value = millisUntilFinished.toHhMmSs()
         _timerVisibility.value = true
-        _tick.value = millisUntilFinished
-        _timerState.value = TimerState.Started
+        EventBus.getDefault().post(TimerState.Start(millisUntilFinished))
+        _timerState.value = TimerScreenState.Started
     }
 
     fun startTimer() {
         visibilityJob.cancel()
-        countDownJob.cancel()
+        EventBus.getDefault().post(TimerState.Finished)
         _timerVisibility.value = true
-        _tick.value = getTempTimer()
-        _timerState.value = TimerState.Started
+        EventBus.getDefault().post(TimerState.Start(getTempTimer()))
+        _timerState.value = TimerScreenState.Started
     }
 
     private fun pauseTimer() {
         visibilityJob.cancel()
-        countDownJob.cancel()
+        EventBus.getDefault().post(TimerState.Finished)
         _timerVisibility.value = false
-        _timerState.value = TimerState.Paused
+        _timerState.value = TimerScreenState.Paused
     }
 
-    private suspend fun finishTimer() {
+    private fun finishTimer() {
         visibilityJob.cancel()
-        ui {
-            _timerVisibility.value = false
-            _timerState.value = TimerState.Finished
-            beepManager.vibrateWave()
-            beepManager.playDefaultNotificationSound()
-        }
+        _timerVisibility.value = false
+        _timerState.value = TimerScreenState.Finished
+        beepManager.vibrateWave()
+        beepManager.playDefaultNotificationSound()
     }
 
     private fun reset() {
-        beepManager.stopNotificationSound()
-        visibilityJob.cancel()
-        countDownJob.cancel()
-        preferenceManager.tempTimeInMillis = ZERO_LONG
-        _timerLabel.value = getTimer().toHhMmSs()
-        _timerVisibility.value = true
-        _tick.value = Long.MIN_VALUE
-        _timerState.value = TimerState.Stopped
+        EventBus.getDefault().post(TimerState.Finished)
     }
 
     fun getTimer() = preferenceManager.timeInMillis
@@ -140,18 +126,40 @@ class MainViewModel @Inject constructor(
 
     fun clearTimer() {
         visibilityJob.cancel()
-        countDownJob.cancel()
+        EventBus.getDefault().post(TimerState.Finished)
         beepManager.stopNotificationSound()
         preferenceManager.tempTimeInMillis = ZERO_LONG
         preferenceManager.timeInMillis = ZERO_LONG
     }
 
-    fun onActionClick(currentState: TimerState) {
-        when (currentState) {
-            TimerState.Started -> pauseTimer()
-            TimerState.Stopped -> startTimer()
-            TimerState.Paused -> resumeTimer(remainingTimeInMillis)
-            TimerState.Finished -> reset()
+    fun onActionClick(currentScreenState: TimerScreenState) {
+        when (currentScreenState) {
+            TimerScreenState.Started -> pauseTimer()
+            TimerScreenState.Stopped -> startTimer()
+            TimerScreenState.Paused -> resumeTimer(remainingTimeInMillis)
+            TimerScreenState.Finished -> reset()
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onMessageEvent(state: TimerState.Finished) {
+        beepManager.stopNotificationSound()
+        visibilityJob.cancel()
+        preferenceManager.tempTimeInMillis = ZERO_LONG
+        _timerLabel.value = getTimer().toHhMmSs()
+        _timerVisibility.value = true
+        _tick.value = getTimer()
+        _timerState.value = TimerScreenState.Stopped
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onMessageEvent(state: TimerState.Running) {
+        remainingTimeInMillis = state.tick
+        _tick.value = state.tick
+        if (state.tick % 1000 == 0L) _timerLabel.value = state.tick.toHhMmSs()
+        if (state.tick <= ZERO_LONG) {
+            if (_timerVisibility.value != false) _timerVisibility.value = false
+            if (_timerState.value != TimerScreenState.Finished) _timerState.value = TimerScreenState.Finished
         }
     }
 
@@ -159,14 +167,14 @@ class MainViewModel @Inject constructor(
         return if (remainingTimeInMillis > 0) currentTime - remainingTimeInMillis else ZERO_LONG
     }
 
-    fun onOptionTimerClick(currentState: TimerState) {
-        when (currentState) {
-            TimerState.Started, TimerState.Finished -> {
+    fun onOptionTimerClick(currentScreenState: TimerScreenState) {
+        when (currentScreenState) {
+            TimerScreenState.Started, TimerScreenState.Finished -> {
                 val currentTime = getTempTimer()
                 setTempTimer(tick.value.getPositiveValue() + 60000 + getElapsedTime(currentTime = currentTime))
                 resumeTimer(getTempTimer() - getElapsedTime(currentTime = currentTime))
             }
-            TimerState.Stopped, TimerState.Paused -> reset()
+            TimerScreenState.Stopped, TimerScreenState.Paused -> reset()
         }
     }
 }

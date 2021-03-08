@@ -13,6 +13,7 @@
     package="com.example.androiddevchallenge">
 
     <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
         android:name=".App"
@@ -31,6 +32,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <service android:name=".service.TimerService" />
+        <service android:name=".service.FinishedTimerService" />
+
+        <receiver android:name=".util.NotificationReceiver" />
     </application>
 
 </manifest>

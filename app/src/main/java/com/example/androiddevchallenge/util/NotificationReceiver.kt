@@ -15,11 +15,16 @@
  */
 package com.example.androiddevchallenge.util
 
-sealed class TimerState {
-    data class Start(val duration: Long) : TimerState()
-    data class Running(val duration: Long, val tick: Long) : TimerState()
-    data class Pause(val duration: Long) : TimerState()
-    data class Paused(val duration: Long, val tick: Long) : TimerState()
-    data class Finish(val negativeStick: Long) : TimerState()
-    object Finished : TimerState()
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.widget.Toast
+import org.greenrobot.eventbus.EventBus
+
+class NotificationReceiver : BroadcastReceiver() {
+
+    override fun onReceive(context: Context?, intent: Intent?) {
+        EventBus.getDefault().post(TimerState.Finished)
+        Toast.makeText(context, intent?.getStringExtra("action_msg"), Toast.LENGTH_SHORT).show()
+    }
 }

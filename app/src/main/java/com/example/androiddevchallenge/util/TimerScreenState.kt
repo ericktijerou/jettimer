@@ -13,13 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.androiddevchallenge.countdown
+package com.example.androiddevchallenge.util
 
-import kotlinx.coroutines.flow.Flow
-import javax.inject.Singleton
-
-@Singleton
-interface TimerManager {
-    fun startCountDown(millisUntilFinished: Long): Flow<Long>
-    fun startIntermittentTimer(): Flow<Boolean>
+sealed class TimerScreenState {
+    object Started : TimerScreenState()
+    object Stopped : TimerScreenState()
+    object Paused : TimerScreenState()
+    object Finished : TimerScreenState()
 }

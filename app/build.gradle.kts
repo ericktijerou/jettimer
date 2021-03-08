@@ -129,7 +129,12 @@ dependencies {
     // Architecture Components
     implementation(Libs.Lifecycle.viewModelCompose)
     implementation(Libs.Lifecycle.liveData)
+    implementation(Libs.Lifecycle.runtime)
+    implementation(Libs.Lifecycle.process)
     implementation(Libs.Navigation.compose)
+
+    // EventBus
+    implementation(Libs.EventBus.eventBus)
 
     // Accompanist
     implementation(Libs.Accompanist.coil)

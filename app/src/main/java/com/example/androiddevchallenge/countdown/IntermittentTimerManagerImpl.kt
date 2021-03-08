@@ -23,23 +23,7 @@ import java.util.Timer
 import java.util.TimerTask
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class TimerManagerImpl : TimerManager {
-    override fun startCountDown(millisUntilFinished: Long) = callbackFlow<Long> {
-        val delay = 0L
-        val period = 100L
-        val timer = Timer()
-        var interval = millisUntilFinished
-        timer.scheduleAtFixedRate(
-            object : TimerTask() {
-                override fun run() {
-                    interval -= period
-                    offer(interval)
-                }
-            },
-            delay, period
-        )
-        awaitClose { timer.cancel() }
-    }
+class IntermittentTimerManagerImpl : IntermittentTimerManager {
 
     override fun startIntermittentTimer() = callbackFlow<Boolean> {
         val timer = Timer()

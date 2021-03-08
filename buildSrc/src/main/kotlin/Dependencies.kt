@@ -45,8 +45,16 @@ object Libs {
     }
 
     object Lifecycle {
+        const val runtime = "androidx.lifecycle:lifecycle-runtime-ktx:${Versions.lifecycle}"
+        const val extensions = "androidx.lifecycle:lifecycle-extensions:${Versions.lifecycle}"
+        const val process = "androidx.lifecycle:lifecycle-process:${Versions.lifecycle}"
+        const val compiler = "androidx.lifecycle:lifecycle-compiler:${Versions.lifecycle}"
         const val viewModelCompose = "androidx.lifecycle:lifecycle-viewmodel-compose:${Versions.composeViewModel}"
         const val liveData = "androidx.lifecycle:lifecycle-livedata-ktx:${Versions.lifecycle}"
+    }
+
+    object EventBus {
+        const val eventBus = "org.greenrobot:eventbus:${Versions.eventBus}"
     }
 
     object Accompanist {
@@ -102,7 +110,8 @@ object Versions {
     internal const val daggerHilt = "2.31-alpha"
     internal const val daggerHiltAndroid = "1.0.0-alpha03"
     internal const val composeViewModel = "1.0.0-alpha01"
-    internal const val lifecycle = "2.2.0"
+    internal const val lifecycle = "2.3.0"
+    internal const val eventBus = "3.2.0"
     const val kotlin = "1.4.30"
     const val compose = "1.0.0-beta01"
     const val spotless = "5.10.0"

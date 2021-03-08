@@ -13,13 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.androiddevchallenge.util
+package com.example.androiddevchallenge.countdown
 
-sealed class TimerState {
-    data class Start(val duration: Long) : TimerState()
-    data class Running(val duration: Long, val tick: Long) : TimerState()
-    data class Pause(val duration: Long) : TimerState()
-    data class Paused(val duration: Long, val tick: Long) : TimerState()
-    data class Finish(val negativeStick: Long) : TimerState()
-    object Finished : TimerState()
+import kotlinx.coroutines.flow.Flow
+import javax.inject.Singleton
+
+@Singleton
+interface IntermittentTimerManager {
+    fun startIntermittentTimer(): Flow<Boolean>
 }
