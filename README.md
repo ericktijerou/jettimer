@@ -3,12 +3,11 @@
 # Jettimer
 ![Workflow result](https://github.com/ericktijerou/jettimer/workflows/Check/badge.svg)
 [![Kotlin](https://img.shields.io/badge/Kotlin-1.4.30-blueviolet.svg)](https://kotlinlang.org)
-![Compose](https://img.shields.io/badge/Compose-1.0.0--beta01-brightgreen)
+[![Compose](https://img.shields.io/badge/Compose-1.0.0--beta01-blue)](https://developer.android.com/jetpack/compose)
 
-## What's Jettimer? :rocket:
+## What's Jettimer? :hourglass_flowing_sand:
 Timer app clone built with Jetpack Compose and Hilt.
 The purpose of this project is to try new Android technologies and learn how it works in an app.
-
 
 ## Motivation and Context
 
@@ -17,17 +16,17 @@ The purpose of this project is to try new Android technologies and learn how it 
 
 The codebase focuses on following key things:
 
-- Canvas - Jetpack Compose
 - Single Activity Design
 - Clean and Simple UI 🎨
 - Jetpack Compose UI
+- Canvas - Jetpack Compose
 - Notifications
-- Service
-- Broadcast receiver
+- Services
+- Broadcast receivers
 
 
 ## Screenshots ✨
-<img src="/results/screenshot_1.png" width="260">&emsp;<img src="/results/screenshot_2.png" width="260">
+<img src="/results/screenshot_1.png" width="260">&emsp;<img src="/results/screenshot_2.png" width="260">&emsp;<img src="/results/screenshot_3.png" width="260">
 
 ## Libraries and tools 🛠
 
