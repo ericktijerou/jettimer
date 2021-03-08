@@ -14,7 +14,7 @@ Make Your Own Animation. It's so Easy!
 
 ProgressWithThumb | Transition | Visibility
 | :---: | :---: | :---: |
-Canvas-AnimateFloatAsState<br/><br/> ![img](results/progress_with_thumb.gif) | AnimatedVisibility<br/><br/>![img](results/transition.gif) | AnimatedVisibility<br/><br/>![img](results/button.gif)
+<br/>Canvas-AnimateFloatAsState<br/><br/> ![img](results/progress_with_thumb.gif) | <br/>AnimatedVisibility<br/><br/>![img](results/transition.gif) | <br/>AnimatedVisibility<br/><br/>![img](results/button.gif)
 
 
 ## Features  👓
