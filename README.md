@@ -17,9 +17,13 @@ The purpose of this project is to try new Android technologies and learn how it 
 
 The codebase focuses on following key things:
 
+- Canvas - Jetpack Compose
 - Single Activity Design
 - Clean and Simple UI 🎨
 - Jetpack Compose UI
+- Notifications
+- Service
+- Broadcast receiver
 
 
 ## Screenshots ✨
