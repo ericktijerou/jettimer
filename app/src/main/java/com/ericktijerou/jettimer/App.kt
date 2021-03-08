@@ -81,8 +81,9 @@ class App : Application(), LifecycleObserver {
                     val newState = TimerState.Running(state.duration, interval)
                     EventBus.getDefault().post(newState)
                     if (interval == 0L) {
-                        stopTimerService()
                         startFinishedTimerService()
+                    } else if (interval < 0) {
+                        stopTimerService()
                     }
                 }
             },
