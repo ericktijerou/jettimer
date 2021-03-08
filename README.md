@@ -12,9 +12,9 @@ The purpose of this project is to try new Android technologies and learn how it 
 ## Motivation and Context
 Make Your Own Animation. It's so Easy!
 
- ProgressWithThumb | Transition | Visibility
---- | --- | --- |
-Canvas-AnimateFloatAsState<br/> ![img](results/progress_with_thumb.gif) | AnimatedVisibility<br/>![img](results/transition.gif) | AnimatedVisibility<br/>![img](results/button.gif)
+ProgressWithThumb | Transition | Visibility
+| :---: | :---: | :---: |
+Canvas-AnimateFloatAsState<br/><br/> ![img](results/progress_with_thumb.gif) | AnimatedVisibility<br/><br/>![img](results/transition.gif) | AnimatedVisibility<br/><br/>![img](results/button.gif)
 
 
 ## Features  👓
