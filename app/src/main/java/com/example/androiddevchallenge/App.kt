@@ -21,10 +21,10 @@ import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
 import androidx.lifecycle.ProcessLifecycleOwner
 import com.example.androiddevchallenge.manager.PreferenceManager
-import com.example.androiddevchallenge.service.stopTimerService
 import com.example.androiddevchallenge.service.startFinishedTimerService
 import com.example.androiddevchallenge.service.startTimerService
 import com.example.androiddevchallenge.service.stopFinishedTimerService
+import com.example.androiddevchallenge.service.stopTimerService
 import com.example.androiddevchallenge.util.TimerState
 import dagger.hilt.android.HiltAndroidApp
 import org.greenrobot.eventbus.EventBus

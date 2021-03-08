@@ -24,7 +24,6 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.fastForEachIndexed
 import com.example.androiddevchallenge.MainActivity
-import com.example.androiddevchallenge.manager.PreferenceManager
 import java.math.BigDecimal
 import java.util.concurrent.TimeUnit
 import kotlin.math.absoluteValue

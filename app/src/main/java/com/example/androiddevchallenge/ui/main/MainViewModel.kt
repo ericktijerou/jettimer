@@ -21,7 +21,6 @@ import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
 import com.example.androiddevchallenge.countdown.IntermittentTimerManager
-import com.example.androiddevchallenge.manager.BeepManager
 import com.example.androiddevchallenge.manager.PreferenceManager
 import com.example.androiddevchallenge.util.ONE_MINUTE_MILLIS
 import com.example.androiddevchallenge.util.ONE_THOUSAND_INT
