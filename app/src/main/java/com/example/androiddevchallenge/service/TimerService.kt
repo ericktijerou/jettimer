@@ -24,8 +24,10 @@ import android.content.Intent
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import com.example.androiddevchallenge.R
+import com.example.androiddevchallenge.util.ONE_THOUSAND_INT
 import com.example.androiddevchallenge.util.TIMER_RUNNING_ID
 import com.example.androiddevchallenge.util.TimerState
+import com.example.androiddevchallenge.util.ZERO_LONG
 import com.example.androiddevchallenge.util.getOpenTimerTabIntent
 import com.example.androiddevchallenge.util.isOreoPlus
 import com.example.androiddevchallenge.util.toHhMmSs
@@ -52,7 +54,7 @@ class TimerService : Service() {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(state: TimerState.Running) {
-        if (state.tick % 1000 == 0L) {
+        if (state.tick % ONE_THOUSAND_INT == ZERO_LONG) {
             val notification: Notification = notification(state.tick.toHhMmSs())
             val mNotificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
             mNotificationManager.notify(TIMER_RUNNING_ID, notification)
@@ -70,7 +72,6 @@ class TimerService : Service() {
         } else {
             stopSelf()
         }
-        onDestroy()
     }
 
     override fun onDestroy() {
@@ -106,16 +107,17 @@ class TimerService : Service() {
     }
 }
 
-fun startTimerService(context: Context) {
+fun Context.startTimerService() {
     if (isOreoPlus()) {
-        context.startForegroundService(Intent(context, TimerService::class.java))
+        startForegroundService(Intent(this, TimerService::class.java))
     } else {
-        context.startService(Intent(context, TimerService::class.java))
+        startService(Intent(this, TimerService::class.java))
     }
 }
 
-fun stopTimerService(context: Context) {
-    context.stopService(Intent(context, TimerService::class.java))
+fun Context.stopTimerService() {
+    EventBus.getDefault().post(TimerStopService)
+    stopService(Intent(this, TimerService::class.java))
 }
 
 object TimerStopService

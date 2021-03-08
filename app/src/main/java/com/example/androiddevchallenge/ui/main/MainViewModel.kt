@@ -23,7 +23,10 @@ import androidx.lifecycle.liveData
 import com.example.androiddevchallenge.countdown.IntermittentTimerManager
 import com.example.androiddevchallenge.manager.BeepManager
 import com.example.androiddevchallenge.manager.PreferenceManager
+import com.example.androiddevchallenge.util.ONE_MINUTE_MILLIS
+import com.example.androiddevchallenge.util.ONE_THOUSAND_INT
 import com.example.androiddevchallenge.util.TimerState
+import com.example.androiddevchallenge.util.ZERO_INT
 import com.example.androiddevchallenge.util.ZERO_LONG
 import com.example.androiddevchallenge.util.getPositiveValue
 import com.example.androiddevchallenge.util.toHhMmSs
@@ -153,7 +156,7 @@ class MainViewModel @Inject constructor(
     fun onMessageEvent(state: TimerState.Running) {
         remainingTimeInMillis = state.tick
         _tick.value = state.tick
-        if (state.tick % 1000 == 0L) _timerLabel.value = state.tick.toHhMmSs()
+        if (state.tick % ONE_THOUSAND_INT == ZERO_LONG) _timerLabel.value = state.tick.toHhMmSs()
         if (state.tick <= ZERO_LONG) {
             if (_timerVisibility.value != false) _timerVisibility.value = false
             if (_timerState.value != TimerState.Finished) _timerState.value = TimerState.Finished
@@ -163,14 +166,14 @@ class MainViewModel @Inject constructor(
     }
 
     private fun getElapsedTime(currentTime: Long): Long {
-        return if (remainingTimeInMillis > 0) currentTime - remainingTimeInMillis else ZERO_LONG
+        return if (remainingTimeInMillis > ZERO_INT) currentTime - remainingTimeInMillis else ZERO_LONG
     }
 
     fun onOptionTimerClick(currentScreenState: TimerState) {
         when (currentScreenState) {
             TimerState.Started, TimerState.Finished -> {
                 val currentTime = getTempTimer()
-                setTempTimer(tick.value.getPositiveValue() + 60000 + getElapsedTime(currentTime = currentTime))
+                setTempTimer(tick.value.getPositiveValue() + ONE_MINUTE_MILLIS + getElapsedTime(currentTime = currentTime))
                 resumeTimer(getTempTimer() - getElapsedTime(currentTime = currentTime))
             }
             else -> reset()

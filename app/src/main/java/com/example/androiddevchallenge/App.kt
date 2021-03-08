@@ -20,30 +20,33 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
 import androidx.lifecycle.ProcessLifecycleOwner
-import com.example.androiddevchallenge.service.FinishedTimerStopService
-import com.example.androiddevchallenge.service.TimerStopService
+import com.example.androiddevchallenge.manager.PreferenceManager
 import com.example.androiddevchallenge.service.stopTimerService
 import com.example.androiddevchallenge.service.startFinishedTimerService
 import com.example.androiddevchallenge.service.startTimerService
 import com.example.androiddevchallenge.service.stopFinishedTimerService
 import com.example.androiddevchallenge.util.TimerState
-import com.example.androiddevchallenge.util.preferences
 import dagger.hilt.android.HiltAndroidApp
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.util.Timer
 import java.util.TimerTask
+import javax.inject.Inject
 
 @HiltAndroidApp
 class App : Application(), LifecycleObserver {
 
+    @Inject lateinit var preferences: PreferenceManager
     private var timer: Timer? = null
 
     override fun onCreate() {
         super.onCreate()
         ProcessLifecycleOwner.get().lifecycle.addObserver(this)
         EventBus.getDefault().register(this)
+        if (!preferences.isTimerRunning) {
+            stopTimerService()
+        }
     }
 
     override fun onTerminate() {
@@ -53,13 +56,19 @@ class App : Application(), LifecycleObserver {
 
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     private fun onAppBackgrounded() {
-        if (preferences.timeInMillis != 0L) {
-            startTimerService(this)
+        if (preferences.isTimerRunning) {
+            startTimerService()
         }
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_START)
+    private fun onAppForegrounded() {
+        stopTimerService()
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(state: TimerState.Start) {
+        preferences.isTimerRunning = true
         val delay = 0L
         val period = 250L
         timer = Timer()
@@ -71,8 +80,8 @@ class App : Application(), LifecycleObserver {
                     val newState = TimerState.Running(state.duration, interval)
                     EventBus.getDefault().post(newState)
                     if (interval == 0L) {
-                        EventBus.getDefault().post(TimerStopService)
-                        startFinishedTimerService(this@App)
+                        stopTimerService()
+                        startFinishedTimerService()
                     }
                 }
             },
@@ -82,15 +91,9 @@ class App : Application(), LifecycleObserver {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(state: TimerState.Finish) {
-        EventBus.getDefault().post(TimerStopService)
-        EventBus.getDefault().post(FinishedTimerStopService)
-        stopFinishedTimerService(this)
-        stopTimerService(this)
+        preferences.isTimerRunning = false
+        stopTimerService()
+        stopFinishedTimerService()
         timer?.cancel()
-    }
-
-    @OnLifecycleEvent(Lifecycle.Event.ON_START)
-    private fun onAppForegrounded() {
-        EventBus.getDefault().post(TimerStopService)
     }
 }

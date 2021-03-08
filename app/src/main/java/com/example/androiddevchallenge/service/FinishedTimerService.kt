@@ -126,16 +126,17 @@ class FinishedTimerService : Service() {
     }
 }
 
-fun startFinishedTimerService(context: Context) {
+fun Context.startFinishedTimerService() {
     if (isOreoPlus()) {
-        context.startForegroundService(Intent(context, FinishedTimerService::class.java))
+        startForegroundService(Intent(this, FinishedTimerService::class.java))
     } else {
-        context.startService(Intent(context, FinishedTimerService::class.java))
+        startService(Intent(this, FinishedTimerService::class.java))
     }
 }
 
-fun stopFinishedTimerService(context: Context) {
-    context.stopService(Intent(context, FinishedTimerService::class.java))
+fun Context.stopFinishedTimerService() {
+    EventBus.getDefault().post(FinishedTimerStopService)
+    stopService(Intent(this, FinishedTimerService::class.java))
 }
 
 object FinishedTimerStopService
