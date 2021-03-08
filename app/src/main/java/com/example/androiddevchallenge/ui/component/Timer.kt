@@ -41,7 +41,7 @@ fun CircularProgressWithThumb(
     progress: Float,
     modifier: Modifier = Modifier,
     color: Color = MaterialTheme.colors.secondaryVariant,
-    backgroundColor: Color = JettimerTheme.colors.textSecondaryColor,
+    backgroundColor: Color = Color.White,
     strokeWidth: Dp = ProgressIndicatorDefaults.StrokeWidth,
     thumbSize: Dp? = null
 ) {

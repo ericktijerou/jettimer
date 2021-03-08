@@ -19,16 +19,10 @@ import androidx.compose.ui.graphics.Color
 
 val Teal200 = Color(0xFF03DAC5)
 
-val BlackLight = Color(0xFF161617)
+val BlackLight = Color(0xFF202124)
 
-val GraySearchBoxLight = Color(0xFFF2F3F5)
 val GraySearchBoxDark = Color(0xFF1F1F1F)
 
-val BackgroundLight = Color(0xFFF2F3F5)
-val BackgroundDark = Color(0xFF0A0A0A)
-
-val TextSecondaryLight = Color(0xFF8A8B8D)
 val TextSecondaryDark = Color(0xFF8B8C8F)
 
-val TimerActiveDark = Color(0xFF6A98E9)
-val TimerActiveLight = Color(0xFF6A98E9)
+val TimerActiveDark = Color(0xFF8AB4F8)

@@ -82,10 +82,14 @@ fun MainScreen(
     }
     val (isFinish, setFinish) = remember { mutableStateOf(false) }
     val tick: Long by viewModel.tick.observeAsState(viewModel.getTempTimer())
-    val timerLabel: String by viewModel.timerLabel.observeAsState(viewModel.getTempTimer().toHhMmSs())
+    val timerLabel: String by viewModel.timerLabel.observeAsState(
+        viewModel.getTempTimer().toHhMmSs()
+    )
     val timerVisibility: Boolean by viewModel.timerVisibility.observeAsState(true)
     if (autoPlay) viewModel.startTimer()
-    val timerScreenState: TimerScreenState by viewModel.timerScreenState.observeAsState(TimerScreenState.Stopped)
+    val timerScreenState: TimerScreenState by viewModel.timerScreenState.observeAsState(
+        TimerScreenState.Stopped
+    )
     BoxWithConstraints {
         val offsetY = with(LocalDensity.current) { maxHeight.toPx().toInt() / 2 }
         AnimatedVisibility(
@@ -98,9 +102,7 @@ fun MainScreen(
                 time = viewModel.getTempTimer(),
                 tick = tick,
                 timerLabel = timerLabel,
-                modifier = modifier
-                    .background(color = MaterialTheme.colors.primary)
-                    .fillMaxSize(),
+                modifier = modifier,
                 timerScreenState = timerScreenState,
                 timerVisibility = timerVisibility,
                 onActionClick = { viewModel.onActionClick(timerScreenState) },
@@ -132,7 +134,11 @@ fun MainScreenBody(
     onDelete: () -> Unit,
     onOptionTimerClick: () -> Unit
 ) {
-    ConstraintLayout(modifier = modifier) {
+    ConstraintLayout(
+        modifier = modifier
+            .background(color = MaterialTheme.colors.primary)
+            .fillMaxSize()
+    ) {
         val (actionButtons, timer) = createRefs()
         val progress = (tick.toFloat() / time.toFloat()).coerceAtLeast(0f)
         val progressOffset = (1 - progress)
@@ -187,12 +193,13 @@ fun MainTimer(
     onOptionTimerClick: () -> Unit
 ) {
     Box(modifier = modifier, contentAlignment = Alignment.Center) {
-        val progressVisibility = if (timerScreenState == TimerScreenState.Finished) timerVisibility else true
+        val progressVisibility =
+            if (timerScreenState == TimerScreenState.Finished) timerVisibility else true
         if (progressVisibility) {
             CircularProgressWithThumb(
                 progress = animatedProgress,
-                strokeWidth = 5.dp,
-                thumbSize = 7.dp,
+                strokeWidth = 4.dp,
+                thumbSize = 6.dp,
                 modifier = Modifier.fillMaxSize()
             )
         }
@@ -367,7 +374,7 @@ fun PreviewHomeScreenBody() {
 @Preview("Main screen body dark")
 @Composable
 fun PreviewHomeScreenBodyDark() {
-    ThemedPreview(darkTheme = true) {
+    ThemedPreview {
         MainScreenBody(
             time = 36000,
             tick = 3000,

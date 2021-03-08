@@ -248,7 +248,7 @@ fun PreviewAddScreenBody() {
 @Preview("Add screen body dark")
 @Composable
 fun PreviewAddScreenBodyDark() {
-    ThemedPreview(darkTheme = true) {
+    ThemedPreview {
         AddScreenBody(
             timeUnits = DataManager.timeUnits,
             dialColumns = DataManager.columns

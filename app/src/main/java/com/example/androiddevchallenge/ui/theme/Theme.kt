@@ -44,27 +44,6 @@ private val DarkColorPalette = darkColors(
     onSurface = Color.White
 )
 
-private val LightColorPalette = lightColors(
-    primary = Color.White,
-    primaryVariant = Color.White,
-    secondary = Teal200,
-    secondaryVariant = TimerActiveLight,
-    background = Color.White,
-    surface = Color.White,
-    onPrimary = Color.Black,
-    onSecondary = Color.Black,
-    onBackground = Color.Black,
-    onSurface = Color.Black
-)
-
-private val LightTimerColorPalette = JettimerColors(
-    textPrimaryColor = Color.Black,
-    textSecondaryColor = TextSecondaryLight,
-    searchBoxColor = GraySearchBoxLight,
-    textVariantColor = Color.White,
-    isDark = false
-)
-
 private val DarkTimerColorPalette = JettimerColors(
     textPrimaryColor = Color.White,
     textSecondaryColor = TextSecondaryDark,
@@ -74,17 +53,16 @@ private val DarkTimerColorPalette = JettimerColors(
 )
 
 @Composable
-fun JettimerTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
-    val (colors, customColors) = if (darkTheme) DarkColorPalette to DarkTimerColorPalette else LightColorPalette to LightTimerColorPalette
+fun JettimerTheme(content: @Composable () -> Unit) {
     val sysUiController = LocalSysUiController.current
     SideEffect {
         sysUiController.setSystemBarsColor(
-            color = colors.primary
+            color = DarkColorPalette.primary
         )
     }
-    ProvideJettimerColors(customColors) {
+    ProvideJettimerColors(DarkTimerColorPalette) {
         MaterialTheme(
-            colors = colors,
+            colors = DarkColorPalette,
             typography = typography,
             shapes = Shapes,
             content = content
