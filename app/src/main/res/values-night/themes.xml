@@ -10,7 +10,7 @@
       the License.
       -->
     <!-- Base application theme. -->
-    <style name="Theme.AndroidDevChallenge" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+    <style name="Theme.Jettimer" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/blackLight</item>
         <item name="colorPrimaryVariant">@color/blackLight</item>

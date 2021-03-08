@@ -10,7 +10,7 @@
       the License.
       -->
     <!-- Base application theme. -->
-    <style name="Theme.AndroidDevChallenge" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+    <style name="Theme.Jettimer" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/blackLight</item>
         <item name="colorPrimaryVariant">@color/blackLight</item>
@@ -25,12 +25,12 @@
         <!-- Customize your theme here. -->
     </style>
 
-    <style name="Theme.AndroidDevChallenge.NoActionBar">
+    <style name="Theme.Jettimer.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="Theme.AndroidDevChallenge.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="Theme.Jettimer.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
-    <style name="Theme.AndroidDevChallenge.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="Theme.Jettimer.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>
