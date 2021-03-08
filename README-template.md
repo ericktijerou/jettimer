@@ -1,22 +1,43 @@
-# Put title of your app here
+![Social Preview](results/social.jpeg)
 
-<!--- Replace <OWNER> with your Github Username and <REPOSITORY> with the name of your repository. -->
-<!--- You can find both of these in the url bar when you open your repository in github. -->
-![Workflow result](https://github.com/<OWNER>/<REPOSITORY>/workflows/Check/badge.svg)
+# Jettimer
+![Workflow result](https://github.com/ericktijerou/jettimer/workflows/Check/badge.svg)
+[![Kotlin](https://img.shields.io/badge/Kotlin-1.4.30-blueviolet.svg)](https://kotlinlang.org)
+![Compose](https://img.shields.io/badge/Compose-1.0.0--beta01-brightgreen)
 
-
-## :scroll: Description
-<!--- Describe your app in one or two sentences -->
-
-
-## :bulb: Motivation and Context
-<!--- Optionally point readers to interesting parts of your submission. -->
-<!--- What are you especially proud of? -->
+## What's Jettimer? :rocket:
+Timer app clone built with Jetpack Compose and Hilt.
+The purpose of this project is to try new Android technologies and learn how it works in an app.
 
 
-## :camera_flash: Screenshots
-<!-- You can add more screenshots here if you like -->
+## Motivation and Context
+
+
+## Features  👓
+
+The codebase focuses on following key things:
+
+- Single Activity Design
+- Clean and Simple UI 🎨
+- Jetpack Compose UI
+
+
+## Screenshots ✨
 <img src="/results/screenshot_1.png" width="260">&emsp;<img src="/results/screenshot_2.png" width="260">
+
+## Libraries and tools 🛠
+
+- [Kotlin](https://kotlinlang.org/) - First class and official programming language for Android development.
+- [Coroutines](https://kotlinlang.org/docs/reference/coroutines-overview.html) - For asynchronous and more..
+- [Android Architecture Components](https://developer.android.com/topic/libraries/architecture) - Collection of libraries that help you design robust, testable, and maintainable apps.
+  - [ViewModel](https://developer.android.com/topic/libraries/architecture/viewmodel) - Stores UI-related data that isn't destroyed on UI changes.
+- [Navigation Component](https://developer.android.com/guide/navigation/navigation-getting-started) Navigation refers to the interactions that allow users to navigate across, into, and back out from the different pieces of content within your app.
+- [Dependency Injection](https://developer.android.com/training/dependency-injection) -
+  - [Hilt-Dagger](https://dagger.dev/hilt/) - Standard library to incorporate Dagger dependency injection into an Android application.
+  - [Hilt-ViewModel](https://developer.android.com/training/dependency-injection/hilt-jetpack) - DI for injecting `ViewModel`.
+- [Jetpack Compose UI Toolkit](https://developer.android.com/jetpack/compose) - Modern UI development toolkit.
+- [Lottie Compose](https://github.com/airbnb/lottie/blob/master/android-compose.md) - Render After Effects animations natively on Android and iOS, Web, and React Native.
+- [Spotless](https://github.com/diffplug/spotless) - Keep your code spotless.
 
 ## License
 ```
