@@ -52,8 +52,9 @@ fun String.toMillis(): Long {
 fun Float.roundUp(): Long = this.toBigDecimal().setScale(0, BigDecimal.ROUND_UP).longValueExact()
 
 fun Int.toStringOrEmpty(): String = if (this.isZero()) EMPTY else this.toString()
-fun Int.toFormattedString(): String =
-    if (this in 9 downTo -9) "$ZERO_STRING${this.absoluteValue}" else this.toStringOrEmpty()
+fun Int.toFormattedString(): String {
+    return if (absoluteValue in 9 downTo 0) "$ZERO_STRING$absoluteValue" else absoluteValue.toStringOrEmpty()
+}
 
 fun Int.minuteToString(hasHour: Boolean): String =
     if (hasHour) this.toFormattedString() else this.toStringOrEmpty()
