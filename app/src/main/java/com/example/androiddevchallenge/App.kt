@@ -22,7 +22,7 @@ import androidx.lifecycle.OnLifecycleEvent
 import androidx.lifecycle.ProcessLifecycleOwner
 import com.example.androiddevchallenge.service.FinishedTimerStopService
 import com.example.androiddevchallenge.service.TimerStopService
-import com.example.androiddevchallenge.service.finishTimerService
+import com.example.androiddevchallenge.service.stopTimerService
 import com.example.androiddevchallenge.service.startFinishedTimerService
 import com.example.androiddevchallenge.service.startTimerService
 import com.example.androiddevchallenge.service.stopFinishedTimerService
@@ -61,7 +61,7 @@ class App : Application(), LifecycleObserver {
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(state: TimerState.Start) {
         val delay = 0L
-        val period = 100L
+        val period = 250L
         timer = Timer()
         var interval = state.duration
         timer?.scheduleAtFixedRate(
@@ -71,7 +71,6 @@ class App : Application(), LifecycleObserver {
                     val newState = TimerState.Running(state.duration, interval)
                     EventBus.getDefault().post(newState)
                     if (interval == 0L) {
-                        EventBus.getDefault().post(TimerState.Finish(interval))
                         EventBus.getDefault().post(TimerStopService)
                         startFinishedTimerService(this@App)
                     }
@@ -82,12 +81,12 @@ class App : Application(), LifecycleObserver {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onMessageEvent(state: TimerState.Finished) {
-        timer?.cancel()
+    fun onMessageEvent(state: TimerState.Finish) {
         EventBus.getDefault().post(TimerStopService)
         EventBus.getDefault().post(FinishedTimerStopService)
         stopFinishedTimerService(this)
-        finishTimerService(this)
+        stopTimerService(this)
+        timer?.cancel()
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)

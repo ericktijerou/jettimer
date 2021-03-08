@@ -17,9 +17,10 @@ package com.example.androiddevchallenge.util
 
 sealed class TimerState {
     data class Start(val duration: Long) : TimerState()
+    object Started : TimerState()
     data class Running(val duration: Long, val tick: Long) : TimerState()
-    data class Pause(val duration: Long) : TimerState()
-    data class Paused(val duration: Long, val tick: Long) : TimerState()
-    data class Finish(val negativeStick: Long) : TimerState()
+    object Stopped : TimerState()
+    object Paused : TimerState()
+    object Finish : TimerState()
     object Finished : TimerState()
 }

@@ -18,12 +18,12 @@ package com.example.androiddevchallenge.util
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.widget.Toast
 import org.greenrobot.eventbus.EventBus
 
 class NotificationReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context?, intent: Intent?) {
+        EventBus.getDefault().post(TimerState.Finish)
         EventBus.getDefault().post(TimerState.Finished)
     }
 }

@@ -114,7 +114,7 @@ fun startTimerService(context: Context) {
     }
 }
 
-fun finishTimerService(context: Context) {
+fun stopTimerService(context: Context) {
     context.stopService(Intent(context, TimerService::class.java))
 }
 
