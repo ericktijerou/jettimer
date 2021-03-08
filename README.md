@@ -49,6 +49,10 @@ The codebase focuses on following key things:
 - [Spotless](https://github.com/diffplug/spotless) - Keep your code spotless.
 - [EventBus](https://greenrobot.org/eventbus/) - EventBus is an open-source library for Android and Java using the publisher/subscriber pattern for loose coupling.
 
+## Inspiration
+
+- [Clock](https://play.google.com/store/apps/details?id=com.google.android.deskclock) - Set alarms, add timers, and run a stopwatch
+
 ## License
 ```
 Copyright 2020 The Android Open Source Project
