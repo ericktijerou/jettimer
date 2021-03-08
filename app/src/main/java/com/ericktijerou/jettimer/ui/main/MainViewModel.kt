@@ -172,7 +172,11 @@ class MainViewModel @Inject constructor(
         when (currentScreenState) {
             TimerState.Started, TimerState.Finished -> {
                 val currentTime = getTempTimer()
-                setTempTimer(tick.value.getPositiveValue() + ONE_MINUTE_MILLIS + getElapsedTime(currentTime = currentTime))
+                setTempTimer(
+                    tick.value.getPositiveValue() + ONE_MINUTE_MILLIS + getElapsedTime(
+                        currentTime = currentTime
+                    )
+                )
                 resumeTimer(getTempTimer() - getElapsedTime(currentTime = currentTime))
             }
             else -> reset()

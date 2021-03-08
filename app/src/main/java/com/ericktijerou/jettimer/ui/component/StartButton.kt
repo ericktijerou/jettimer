@@ -34,8 +34,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.ericktijerou.jettimer.ui.theme.JettimerTheme
 import com.ericktijerou.jettimer.R
+import com.ericktijerou.jettimer.ui.theme.JettimerTheme
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable

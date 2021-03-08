@@ -31,7 +31,10 @@ class IntermittentTimerManagerImpl : IntermittentTimerManager {
         timer.scheduleAtFixedRate(
             object : TimerTask() {
                 override fun run() {
-                    try { offer(time) } catch (e: Exception) {}
+                    try {
+                        offer(time)
+                    } catch (e: Exception) {
+                    }
                     time = !time
                 }
             },

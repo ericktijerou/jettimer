@@ -56,9 +56,16 @@ fun JettimerApp() {
                 val modifier = Modifier.padding(innerPadding)
                 val navController = rememberNavController()
                 NavHost(navController, startDestination = Screen.Main.route) {
-                    composable(Screen.Main.route, arguments = listOf(navArgument(ARG_AUTO_PLAY) { type = NavType.BoolType })) {
+                    composable(
+                        Screen.Main.route,
+                        arguments = listOf(navArgument(ARG_AUTO_PLAY) { type = NavType.BoolType })
+                    ) {
                         val autoPlay = it.arguments?.getBoolean(ARG_AUTO_PLAY) ?: false
-                        MainScreen(viewModel = it.hiltNavGraphViewModel(), modifier = modifier, autoPlay = autoPlay) {
+                        MainScreen(
+                            viewModel = it.hiltNavGraphViewModel(),
+                            modifier = modifier,
+                            autoPlay = autoPlay
+                        ) {
                             navController.navigate(route = Screen.AddTimer.route) {
                                 popUpTo(Screen.Main.route) { inclusive = true }
                             }

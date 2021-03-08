@@ -57,6 +57,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.ericktijerou.jettimer.R
 import com.ericktijerou.jettimer.manager.DataManager
 import com.ericktijerou.jettimer.ui.component.StartButton
 import com.ericktijerou.jettimer.ui.theme.JettimerTheme
@@ -66,7 +67,6 @@ import com.ericktijerou.jettimer.util.fillWithZeros
 import com.ericktijerou.jettimer.util.firstInputIsZero
 import com.ericktijerou.jettimer.util.removeLast
 import com.ericktijerou.jettimer.util.toMillis
-import com.ericktijerou.jettimer.R
 import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalAnimationApi::class)

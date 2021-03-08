@@ -25,6 +25,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
+import com.ericktijerou.jettimer.R
 import com.ericktijerou.jettimer.manager.BeepManager
 import com.ericktijerou.jettimer.util.NotificationReceiver
 import com.ericktijerou.jettimer.util.ONE_THOUSAND_INT
@@ -35,7 +36,6 @@ import com.ericktijerou.jettimer.util.ZERO_STRING
 import com.ericktijerou.jettimer.util.getOpenTimerTabIntent
 import com.ericktijerou.jettimer.util.isOreoPlus
 import com.ericktijerou.jettimer.util.toHhMmSs
-import com.ericktijerou.jettimer.R
 import dagger.hilt.android.AndroidEntryPoint
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -45,7 +45,8 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class FinishedTimerService : Service() {
 
-    @Inject lateinit var beepManager: BeepManager
+    @Inject
+    lateinit var beepManager: BeepManager
     private val bus = EventBus.getDefault()
 
     override fun onCreate() {
@@ -105,7 +106,12 @@ class FinishedTimerService : Service() {
         }
         val broadcastIntent = Intent(application, NotificationReceiver::class.java)
         val broadcastPendingIntent: PendingIntent =
-            PendingIntent.getBroadcast(application, 0, broadcastIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+            PendingIntent.getBroadcast(
+                application,
+                0,
+                broadcastIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT
+            )
 
         val builder = NotificationCompat.Builder(this, channelId)
             .setContentTitle(formattedTick)

@@ -37,7 +37,8 @@ import javax.inject.Inject
 @HiltAndroidApp
 class App : Application(), LifecycleObserver {
 
-    @Inject lateinit var preferences: PreferenceManager
+    @Inject
+    lateinit var preferences: PreferenceManager
     private var timer: Timer? = null
 
     override fun onCreate() {

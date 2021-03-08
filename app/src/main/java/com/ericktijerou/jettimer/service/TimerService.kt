@@ -23,6 +23,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
+import com.ericktijerou.jettimer.R
 import com.ericktijerou.jettimer.util.ONE_THOUSAND_INT
 import com.ericktijerou.jettimer.util.TIMER_RUNNING_ID
 import com.ericktijerou.jettimer.util.TimerState
@@ -30,7 +31,6 @@ import com.ericktijerou.jettimer.util.ZERO_LONG
 import com.ericktijerou.jettimer.util.getOpenTimerTabIntent
 import com.ericktijerou.jettimer.util.isOreoPlus
 import com.ericktijerou.jettimer.util.toHhMmSs
-import com.ericktijerou.jettimer.R
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode

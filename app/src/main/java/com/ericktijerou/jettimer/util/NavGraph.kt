@@ -27,6 +27,7 @@ sealed class Screen(val route: String) {
         const val ARG_AUTO_PLAY: String = "autoplay"
         fun route(autoplay: Boolean) = "main/$autoplay"
     }
+
     object AddTimer : Screen("addtimer")
 }
 
