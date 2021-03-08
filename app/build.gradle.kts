@@ -137,6 +137,5 @@ dependencies {
     implementation(Libs.EventBus.eventBus)
 
     // Accompanist
-    implementation(Libs.Accompanist.coil)
     implementation(Libs.Accompanist.insets)
 }
