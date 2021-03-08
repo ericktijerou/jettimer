@@ -24,8 +24,10 @@ import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.os.IBinder
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.example.androiddevchallenge.R
+import com.example.androiddevchallenge.manager.BeepManager
 import com.example.androiddevchallenge.util.NotificationReceiver
 import com.example.androiddevchallenge.util.ONE_THOUSAND_INT
 import com.example.androiddevchallenge.util.TIMER_FINISH_RUNNING_ID
@@ -35,12 +37,16 @@ import com.example.androiddevchallenge.util.ZERO_STRING
 import com.example.androiddevchallenge.util.getOpenTimerTabIntent
 import com.example.androiddevchallenge.util.isOreoPlus
 import com.example.androiddevchallenge.util.toHhMmSs
+import dagger.hilt.android.AndroidEntryPoint
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class FinishedTimerService : Service() {
 
+    @Inject lateinit var beepManager: BeepManager
     private val bus = EventBus.getDefault()
 
     override fun onCreate() {
@@ -53,6 +59,8 @@ class FinishedTimerService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
         startForeground(TIMER_FINISH_RUNNING_ID, notification(ZERO_STRING))
+        beepManager.playNotificationSound()
+        Log.d("Hola", " Holi")
         return START_NOT_STICKY
     }
 
@@ -76,6 +84,7 @@ class FinishedTimerService : Service() {
         } else {
             stopSelf()
         }
+        beepManager.stopNotificationSound()
     }
 
     override fun onDestroy() {

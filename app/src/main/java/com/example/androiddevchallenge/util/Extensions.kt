@@ -88,6 +88,7 @@ fun String.calculateFontSize(): TextUnit {
 val Context.preferences: PreferenceManager get() = PreferenceManager(this)
 
 fun isOreoPlus() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
+
 fun Context.getLaunchIntent() =
     packageManager.getLaunchIntentForPackage("com.ericktijerou.jettimer")
 

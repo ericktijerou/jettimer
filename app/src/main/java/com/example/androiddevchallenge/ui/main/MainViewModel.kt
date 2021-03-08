@@ -39,8 +39,7 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val intermittentTimerManager: IntermittentTimerManager,
-    private val preferenceManager: PreferenceManager,
-    private val beepManager: BeepManager
+    private val preferenceManager: PreferenceManager
 ) :
     ViewModel() {
 
@@ -103,14 +102,6 @@ class MainViewModel @Inject constructor(
         _timerState.value = TimerState.Paused
     }
 
-    private fun finishTimer() {
-        visibilityJob.cancel()
-        _timerVisibility.value = false
-        _timerState.value = TimerState.Finished
-        beepManager.vibrateWave()
-        beepManager.playDefaultNotificationSound()
-    }
-
     private fun reset() {
         onFinish()
     }
@@ -126,7 +117,6 @@ class MainViewModel @Inject constructor(
     fun clearTimer() {
         visibilityJob.cancel()
         EventBus.getDefault().post(TimerState.Finish)
-        beepManager.stopNotificationSound()
         preferenceManager.tempTimeInMillis = ZERO_LONG
         preferenceManager.timeInMillis = ZERO_LONG
     }
@@ -146,7 +136,6 @@ class MainViewModel @Inject constructor(
     }
 
     private fun onFinishedState() {
-        beepManager.stopNotificationSound()
         visibilityJob.cancel()
         preferenceManager.tempTimeInMillis = ZERO_LONG
         _timerLabel.value = getTimer().toHhMmSs()

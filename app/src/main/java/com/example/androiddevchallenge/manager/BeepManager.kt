@@ -46,10 +46,13 @@ class BeepManager @Inject constructor(val context: Context) {
         return MediaPlayer.create(context, R.raw.beep_alarm)
     }
 
-    fun playDefaultNotificationSound() {
-        player = newPlayer()
-        player.isLooping = true
-        player.start()
+    fun playNotificationSound() {
+        if (!player.isPlaying) {
+            player = newPlayer()
+            player.isLooping = true
+            player.start()
+        }
+        vibrateWave()
     }
 
     fun stopNotificationSound() {
